@@ -1,3 +1,5 @@
+# Post request - https://studies.cs.helsinki.fi/exampleapp/new_note
+
 ```mermaid 
 sequenceDiagram
     participant Browser
@@ -13,7 +15,7 @@ sequenceDiagram
 
     Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/notes
     activate Server
-    Server-->>Browser: HTML-dokumentti
+    Server-->>Browser: 200 OK HTML-dokumentti
     deactivate Server
 
     Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
