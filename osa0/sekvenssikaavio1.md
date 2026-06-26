@@ -1,31 +1,37 @@
-sekvessikaavio 
-    osallistuja selain
-    osallistuja palvelin
+```mermaid 
+sequenceDiagram
+    participant Browser
+    participant Server
 
-    selain ->> palvelin: POST {note: 'hola'}
-    palvelin aktivoituu
-    päivittää käyttäjän lähettämän uuden noten palvelimen muistiin.
-    palvelin ->> selain HTML dokumentti
-    palvelin deaktivoituu
+    Browser->>Server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+    Note right of Browser: Lomakkeen data: { note: "hola" }
 
-    selain ->> palvelin: GET https://studies.cs.helsinki.fi/exampleapp/main.css 
-    palvelin aktivoituu
-    palvelin ->> selain: CSS- tiedosto
-    palvelin deaktivoituu
+    activate Server
+    Note right of Server: Palvelin tallentaa uuden muistiinpanon.
+    Server-->>Browser: HTTP 302 Redirect (/exampleapp/notes)
+    deactivate Server
 
-    selain ->> palvelin: GET https://studies.cs.helsinki.fi/exampleapp/main.js
-    palvelin aktivoituu
-    palvelin ->> selain: JS -tiedosto
-    palvelin deaktivoituu
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+    activate Server
+    Server-->>Browser: HTML-dokumentti
+    deactivate Server
 
-    Selain suorittaa js-koodia, joka hakee JSONin palvelimelta.
-    
-    selain ->> palvelin: GET https://studies.cs.helsinki.fi/exampleapp/data.json
-    palvelin aktivoituu
-    palvelin ->> selain: data.json
-    palvelin deaktivoituu
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate Server
+    Server-->>Browser: main.css
+    deactivate Server
 
-    selain renderöi notesit.
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate Server
+    Server-->>Browser: main.js
+    deactivate Server
 
-    
-    
+    Note over Browser: Selain suorittaa JS-koodin.
+
+    Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate Server
+    Server-->>Browser: data.json
+    deactivate Server
+
+    Note over Browser: Selain renderöi muistiinpanot.
+```
