@@ -1,2 +1,2 @@
 # Mihin jäin
-Osa 0 tehtävä: 0.6
+Osa 1.D Taulukon käsittelyä
