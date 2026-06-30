@@ -1,8 +1,14 @@
-const Content = ({ part, exercises }) => {
-    if (!part) throw new Error('bad part');
-    if (!exercises) throw new Error('bad exercises');
+import Part from "./Part.jsx";
+
+const Content = ({parts})=> {
+    if (!parts) throw new Error('no content');
+
     return (
-        <p>{part} {exercises}</p>
+        <>
+            { parts.map( (part, index) => {
+                return <Part key={index} part={part}/>
+            })}
+        </>
     )
 }
 
