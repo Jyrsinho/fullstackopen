@@ -1,14 +1,13 @@
 const Statistics = ({ feedback }) => {
-    if (!feedback) {
-        console.log('invalid props in Statistics');
-        return null;
-    }
+    const hasFeedback = !(feedback.all === 0)
 
     return (
        <>
-           {Object.entries(feedback).map(([key, value]) => {
-               return <p>{key}: {value}</p>
-           })}
+           { hasFeedback ? Object.entries(feedback).map(([key, value]) => {
+               return <p key={`statistic_${key}`}>{key}: {value}</p>
+           })
+           : <p>No feedback given</p>
+           }
        </>
     )
 }
