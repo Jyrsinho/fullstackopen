@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Statistics from "./Statistics.jsx";
 import {countAverage} from "./utilities.js";
+import Button from "./Button.jsx";
 
 const App = () => {
     // tallenna napit omaan tilaansa
@@ -26,9 +27,9 @@ const App = () => {
     return (
         <div>
             <h2>give feedback</h2>
-            <button onClick={ createClickHandler(setGood) } >good</button>
-            <button onClick={createClickHandler(setNeutral )}>neutral</button>
-            <button onClick={createClickHandler(setBad) }>bad</button>
+            <Button onClick={createClickHandler(setGood) }  text={'good'}></Button>
+            <Button onClick={createClickHandler(setNeutral) } text={'neutral'}/>
+            <Button onClick={createClickHandler(setBad) } text={'bad'}></Button>
             <h2>statistics</h2>
             <Statistics feedback={feedback}/>
         </div>
