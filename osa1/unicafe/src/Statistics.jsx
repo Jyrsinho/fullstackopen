@@ -1,14 +1,14 @@
-const Statistics = ({good, neutral, bad}) => {
-    if (good === null || neutral === null || bad === null) {
+const Statistics = ({ feedback }) => {
+    if (!feedback) {
         console.log('invalid props in Statistics');
         return null;
     }
 
     return (
        <>
-           <p>good: {good}</p>
-           <p>neutral: {neutral}</p>
-           <p>bad: {bad}</p>
+           {Object.entries(feedback).map(([key, value]) => {
+               return <p>{key}: {value}</p>
+           })}
        </>
     )
 }
