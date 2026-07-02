@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Statistics from "./Statistics.jsx";
-import {countAverage} from "./utilities.js";
+import {countAverage} from "../../../utilities/utilities.js";
 import Button from "./Button.jsx";
 
 const App = () => {
