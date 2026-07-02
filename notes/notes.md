@@ -1,2 +1,2 @@
 # Mihin jäin
-Osa 1.D Funktion palauttava funktio
+Osa 1 tehtävät tehty -> pitää palauttaa
