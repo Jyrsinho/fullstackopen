@@ -6,11 +6,6 @@ export const countAverage = ({good, neutral, bad}) => {
     return (good - bad) / amountOfReviews;
 };
 
-
-export const getRandomIndexFromArray = (arrayLength) => {
-    return getRandomIntegerIncluding(0, arrayLength - 1);
-}
-
 export const getRandomIntegerIncluding = (min, max) => {
     if (min > max) throw new RangeError('min must be greater than max');
     return Math.floor(Math.random() * (max - min + 1)) + min;

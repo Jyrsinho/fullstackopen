@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Anecdote from "./Anecdote.jsx";
-import {getRandomIndexFromArray, getRandomIntegerIncluding} from "../../../utilities/utilities.js";
+import {getRandomIntegerIncluding} from "../../../utilities/utilities.js";
 
 
 const App = () => {
@@ -16,15 +16,28 @@ const App = () => {
     ]
 
     const [selected, setSelected] = useState(0)
+    const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0));
+    const mostVotedIndex = votes.indexOf(Math.max(...votes));
+
 
     const handleRandomButton = () => {
-        setSelected(getRandomIndexFromArray(anecdotes.length));
+        setSelected(getRandomIntegerIncluding(0, anecdotes.length - 1));
+    }
+
+    const handleVote = () => {
+        const copiedVotes = [...votes];
+        copiedVotes[selected] = copiedVotes[selected] + 1;
+        setVotes(copiedVotes);
     }
 
     return (
         <div>
+            <h2>Anecdote of the day</h2>
             <Anecdote anecdote={anecdotes[selected]}/>
+            <button onClick={handleVote}>vote</button>
             <button onClick={handleRandomButton}>next anecdote</button>
+            <h2>Anecdote with most votes</h2>
+            <Anecdote anecdote={anecdotes[mostVotedIndex]}/>
         </div>
     )
 }
