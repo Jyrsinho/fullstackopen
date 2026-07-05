@@ -1,18 +1,21 @@
 import {useState} from 'react'
 import NameForm from "./NameForm.jsx";
 import {Numbers} from "./Numbers.jsx";
-import {isValidPerson} from "../../../utilities/validatePerson.js";
+import {isValidPerson} from "../../../../utilities/validatePerson.js";
+import {testPersons} from "../fixtures/testPersons.js";
+import {Filter} from "./Filter.jsx";
 
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        {
-            name: 'Arto Hellas',
-            phone: '0123456789',
-        }
-    ])
+    const [persons, setPersons] = useState(testPersons)
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
+    const [filter, setFilter] = useState('')
+
+    const selectedPersons = persons.filter(person => {
+        return person.name.toLowerCase().includes(filter)
+    })
+
 
 
    const handleNameChange = (event) => {
@@ -21,6 +24,10 @@ const App = () => {
 
    const handleNumberChange = (event) => {
         setNewNumber(event.target.value)
+   }
+
+   const handleFilterChange = (event) => {
+        setFilter(event.target.value)
    }
 
     const handleSubmit = (e) => {
@@ -40,12 +47,13 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Filter filter={filter} onChange={handleFilterChange}/>
             <NameForm handleNameChange={handleNameChange}
                       handleNumberChange={handleNumberChange}
                       newName={newName}
                       newNumber={newNumber}
-                      onSubmit={handleSubmit} />
-            <Numbers persons={persons} />
+                      onSubmit={handleSubmit}/>
+            <Numbers persons={selectedPersons}/>
         </div>
     )
 

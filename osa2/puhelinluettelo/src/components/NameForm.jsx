@@ -8,6 +8,7 @@ function Input({value, onChange, id}) {
 const NameForm = ({handleNameChange, handleNumberChange, newNumber, newName, onSubmit}) => {
     return (
         <form onSubmit={onSubmit}>
+            <h2>add a new</h2>
             <Input value={newName} onChange={handleNameChange} id={"name"} />
             <Input value={newNumber} onChange={handleNumberChange} id={"number"} />
             <div>
