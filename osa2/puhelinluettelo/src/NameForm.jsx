@@ -1,11 +1,17 @@
-const NameForm = ({onChange, onSubmit, value}) => {
+function Input({value, onChange, id}) {
+    return <div>
+        <label htmlFor={id} >{id}: </label>
+        <input id={id} value={value} onChange={(e) => onChange(e)} type="text"/>
+    </div>;
+}
+
+const NameForm = ({handleNameChange, handleNumberChange, newNumber, newName, onSubmit}) => {
     return (
         <form onSubmit={onSubmit}>
+            <Input value={newName} onChange={handleNameChange} id={"name"} />
+            <Input value={newNumber} onChange={handleNumberChange} id={"number"} />
             <div>
-                <label htmlFor={'name'}></label> <input value={value} onChange={onChange} type='text' />
-            </div>
-            <div>
-                <button type="submit" >add</button>
+                <button type="submit">add</button>
             </div>
         </form>
     )
