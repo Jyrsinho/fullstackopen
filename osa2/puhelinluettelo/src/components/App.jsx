@@ -1,13 +1,12 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import NameForm from "./NameForm.jsx";
 import {Numbers} from "./Numbers.jsx";
 import {isValidPerson} from "../../../../utilities/validatePerson.js";
-import {testPersons} from "../fixtures/testPersons.js";
 import {Filter} from "./Filter.jsx";
-
+import axios from 'axios';
 
 const App = () => {
-    const [persons, setPersons] = useState(testPersons)
+    const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
@@ -15,6 +14,15 @@ const App = () => {
     const selectedPersons = persons.filter(person => {
         return person.name.toLowerCase().includes(filter)
     })
+
+    useEffect(() => {
+        axios
+            .get('http://localhost:3001/persons')
+            .then(res => {
+                console.log(res)
+                setPersons(res.data)
+            })
+    }, [])
 
 
 
