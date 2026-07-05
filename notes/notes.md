@@ -1,2 +1,2 @@
 # Mihin jäin
-Osa 1 tehtävät tehty -> pitää palauttaa
+Osa 2.D
