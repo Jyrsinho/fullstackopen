@@ -3,7 +3,7 @@ import NameForm from "./NameForm.jsx";
 import {Numbers} from "./Numbers.jsx";
 import {isValidPerson} from "../../../../utilities/validatePerson.js";
 import {Filter} from "./Filter.jsx";
-import axios from 'axios';
+import personService from "./../services/persons.js";
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -12,15 +12,13 @@ const App = () => {
     const [filter, setFilter] = useState('')
 
     const selectedPersons = persons.filter(person => {
-        return person.name.toLowerCase().includes(filter)
+        return person.name.toLowerCase().includes(filter.toLowerCase())
     })
 
     useEffect(() => {
-        axios
-            .get('http://localhost:3001/persons')
-            .then(res => {
-                console.log(res)
-                setPersons(res.data)
+        personService.getAll()
+            .then(response => {
+                setPersons(response.data);
             })
     }, [])
 
@@ -38,6 +36,10 @@ const App = () => {
         setFilter(event.target.value)
    }
 
+   const handleDeletePerson = (personId) => {
+        console.log(`deletePerson ${personId}`)
+   }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const newPerson = {
@@ -47,6 +49,7 @@ const App = () => {
 
         if (isValidPerson(newPerson , persons) ) {
             setPersons(persons.concat(newPerson))
+            personService.createPerson(newPerson)
         }else {
             alert(`${newPerson.name} already exists!`);
         }
@@ -61,7 +64,8 @@ const App = () => {
                       newName={newName}
                       newNumber={newNumber}
                       onSubmit={handleSubmit}/>
-            <Numbers persons={selectedPersons}/>
+            <Numbers persons={selectedPersons}
+                     handleDeletePerson={handleDeletePerson}/>
         </div>
     )
 

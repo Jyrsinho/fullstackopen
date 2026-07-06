@@ -1,12 +1,12 @@
-export function Numbers({persons}) {
+import {Person} from "./Person.jsx";
+
+export function Numbers({persons, handleDeletePerson}) {
     if (persons.length === 0) return null;
     return (
         <div>
             <h2>Numbers: </h2>
             {persons.map((person) => (
-                <div key={person.name}>
-                    <p>{person.name}: {person.phone}</p>
-                </div>
+                <Person key={person.name} person={person} handleDelete={() => handleDeletePerson(person.id)}/>
             ))}
         </div>
 
