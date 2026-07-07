@@ -37,7 +37,10 @@ const App = () => {
    }
 
    const handleDeletePerson = (personId) => {
-        console.log(`deletePerson ${personId}`)
+        personService.deletePerson(personId);
+        console.log(`deletePerson ${personId}`);
+        const updatedPersons = persons.filter(person => person.id !== personId);
+        setPersons(updatedPersons);
    }
 
     const handleSubmit = (e) => {

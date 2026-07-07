@@ -1,24 +1,9 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "phone": "040-123456",
-      "id": "1"
-    },
-    {
-      "name": "Ada Lovelace",
-      "phone": "39-44-5323523",
-      "id": "2"
-    },
-    {
       "name": "Dan Abramov",
       "phone": "12-43-234345",
       "id": "3"
-    },
-    {
-      "name": "Mary Poppendieck",
-      "phone": "39-23-6423122",
-      "id": "4"
     },
     {
       "name": "Markus Grönholm",
@@ -34,16 +19,6 @@
       "name": "Kimmo",
       "phone": "0400",
       "id": "2at0jTJR2OY"
-    },
-    {
-      "name": "Kalle ",
-      "phone": "04400",
-      "id": "pakY4PViKRM"
-    },
-    {
-      "name": "Sami",
-      "phone": "0444",
-      "id": "hOpw_UZrjRc"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
