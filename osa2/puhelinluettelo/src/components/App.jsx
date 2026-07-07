@@ -65,14 +65,14 @@ const App = () => {
         }
     }
 
-    function createNewPerson(newPerson) {
+    const createNewPerson = (newPerson) =>{
         personService.createPerson(newPerson)
         .then(response => {
             setPersons(persons.concat(response.data))
         })
     }
 
-    function editExistingPerson(id, newPersonData) {
+    const editExistingPerson = (id, newPersonData) => {
         const editConfirmed = confirm(
             `${newPersonData.name} already exists! Do you want to edit person?`,);
         if (editConfirmed) {
