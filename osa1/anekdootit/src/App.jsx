@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Anecdote from "./Anecdote.jsx";
-import {getRandomIntegerIncluding} from "../../../utilities/utilities.js";
+import {getRandomIntegerIncluding} from "../../../utilities/math_utilities.js";
 
 
 const App = () => {

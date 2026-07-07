@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest";
-import {countAverage} from '../utilities/utilities.js'
+import {countAverage} from '../utilities/math_utilities.js'
 import fc from 'fast-check';
 
 describe('countAverage', () => {

@@ -1,5 +1,5 @@
 import {describe, expect, test} from "vitest";
-import { getRandomIntegerIncluding} from '../utilities/utilities.js'
+import { getRandomIntegerIncluding} from '../utilities/math_utilities.js'
 import fc from 'fast-check';
 
 describe('getRandomIntegerIncluding', () => {

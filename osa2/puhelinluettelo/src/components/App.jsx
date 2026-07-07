@@ -1,9 +1,9 @@
 import {useEffect, useState} from 'react'
 import NameForm from "./NameForm.jsx";
 import {Numbers} from "./Numbers.jsx";
-import {isValidPerson} from "../../../../utilities/validatePerson.js";
 import {Filter} from "./Filter.jsx";
 import personService from "./../services/persons.js";
+import {findPersonByName} from "../../../../utilities/person_utilites.js";
 
 const App = () => {
     const [persons, setPersons] = useState([])
@@ -14,6 +14,7 @@ const App = () => {
     const selectedPersons = persons.filter(person => {
         return person.name.toLowerCase().includes(filter.toLowerCase())
     })
+    console.log('selected persons', selectedPersons);
 
     useEffect(() => {
         personService.getAll()
@@ -37,10 +38,15 @@ const App = () => {
    }
 
    const handleDeletePerson = (personId) => {
-        personService.deletePerson(personId);
-        console.log(`deletePerson ${personId}`);
-        const updatedPersons = persons.filter(person => person.id !== personId);
-        setPersons(updatedPersons);
+        const personToDelete = persons.find(person => person.id === personId);
+        const userConfirmedDelete = confirm(
+            `Are you sure you want to delete person ${personToDelete.name}?`);
+
+        if (userConfirmedDelete) {
+            personService.deletePerson(personId);
+            const updatedPersons = persons.filter(person => person.id !== personId);
+            setPersons(updatedPersons);
+        }
    }
 
     const handleSubmit = (e) => {
@@ -50,11 +56,34 @@ const App = () => {
             phone: newNumber,
         }
 
-        if (isValidPerson(newPerson , persons) ) {
-            setPersons(persons.concat(newPerson))
-            personService.createPerson(newPerson)
+        const existingPerson = findPersonByName(persons, newPerson.name)
+
+        if (existingPerson) {
+            editExistingPerson(existingPerson.id, newPerson);
         }else {
-            alert(`${newPerson.name} already exists!`);
+            createNewPerson(newPerson);
+        }
+    }
+
+    function createNewPerson(newPerson) {
+        personService.createPerson(newPerson)
+        .then(response => {
+            setPersons(persons.concat(response.data))
+        })
+    }
+
+    function editExistingPerson(id, newPersonData) {
+        const editConfirmed = confirm(
+            `${newPersonData.name} already exists! Do you want to edit person?`,);
+        if (editConfirmed) {
+            personService.updatePerson(id, newPersonData)
+                .then(response => {
+                    console.log(`update respons: ${response.data}`);
+                    const editedPersons = persons.map(person => {
+                        return person.id === id ? response.data : person;
+                    })
+                    setPersons(editedPersons);
+                })
         }
     }
 

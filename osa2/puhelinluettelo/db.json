@@ -1,24 +1,19 @@
 {
   "persons": [
     {
-      "name": "Dan Abramov",
-      "phone": "12-43-234345",
-      "id": "3"
-    },
-    {
-      "name": "Markus Grönholm",
-      "phone": "0400-123-123",
-      "id": "5"
-    },
-    {
-      "name": "Kalle",
-      "phone": "0400",
+      "name": "kalle",
+      "phone": "0200",
       "id": "KAq3Iz-FJvM"
     },
     {
-      "name": "Kimmo",
+      "name": "jyri",
+      "phone": "01000",
+      "id": "7u5SdZHlEAA"
+    },
+    {
+      "name": "Jari",
       "phone": "0400",
-      "id": "2at0jTJR2OY"
+      "id": "pwCryuOH2Ss"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
