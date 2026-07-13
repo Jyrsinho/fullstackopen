@@ -1,0 +1,11 @@
+.countrySelector {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+
+button{
+    margin-left: 1em;
+    padding: 0;
+}
