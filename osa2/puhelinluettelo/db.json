@@ -1,19 +1,9 @@
 {
   "persons": [
     {
-      "name": "kalle",
-      "phone": "0200",
-      "id": "KAq3Iz-FJvM"
-    },
-    {
-      "name": "jyri",
-      "phone": "01000",
-      "id": "7u5SdZHlEAA"
-    },
-    {
-      "name": "Jari",
-      "phone": "0400",
-      "id": "pwCryuOH2Ss"
+      "name": "kari",
+      "phone": "200",
+      "id": "FUSo3TJAtls"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

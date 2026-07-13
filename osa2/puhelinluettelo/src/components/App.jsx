@@ -4,22 +4,23 @@ import {Numbers} from "./Numbers.jsx";
 import {Filter} from "./Filter.jsx";
 import personService from "./../services/persons.js";
 import {findPersonByName} from "../../../../utilities/person_utilites.js";
+import Notification from "./Notification.jsx";
 
 const App = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNewNumber] = useState('')
     const [filter, setFilter] = useState('')
+    const [notification, setNotification] = useState(null);
 
     const selectedPersons = persons.filter(person => {
         return person.name.toLowerCase().includes(filter.toLowerCase())
     })
-    console.log('selected persons', selectedPersons);
 
     useEffect(() => {
         personService.getAll()
-            .then(response => {
-                setPersons(response.data);
+            .then(allPersons => {
+                setPersons(allPersons);
             })
     }, [])
 
@@ -38,15 +39,29 @@ const App = () => {
    }
 
    const handleDeletePerson = (personId) => {
-        const personToDelete = persons.find(person => person.id === personId);
-        const userConfirmedDelete = confirm(
-            `Are you sure you want to delete person ${personToDelete.name}?`);
+       const personToDelete = persons.find(person => person.id === personId);
+       const userConfirmedDelete = confirm(
+           `Are you sure you want to delete person ${personToDelete.name}?`);
 
-        if (userConfirmedDelete) {
-            personService.deletePerson(personId);
-            const updatedPersons = persons.filter(person => person.id !== personId);
-            setPersons(updatedPersons);
-        }
+       if (userConfirmedDelete) {
+           personService.deletePerson(personId)
+           .then(deletedPerson=> {
+               console.log(`deletedPerson- ${deletedPerson}`);
+               const updatedPersons = persons.filter(person => person.id !== deletedPerson.id);
+               setPersons(updatedPersons);
+               showNotification({
+                   type: "success",
+                   message: `Successfully deleted person ${personToDelete.name}!`
+               });
+           })
+               .catch(error => {
+                   console.log(error);
+                   showNotification({
+                       type: "error",
+                       message: `Person ${personToDelete.name} is already deleted!`,
+                   })
+               })
+       }
    }
 
     const handleSubmit = (e) => {
@@ -65,31 +80,62 @@ const App = () => {
         }
     }
 
-    const createNewPerson = (newPerson) =>{
-        personService.createPerson(newPerson)
-        .then(response => {
-            setPersons(persons.concat(response.data))
-        })
-    }
-
-    const editExistingPerson = (id, newPersonData) => {
+    const editExistingPerson = (id, editedPersonData) => {
         const editConfirmed = confirm(
-            `${newPersonData.name} already exists! Do you want to edit person?`,);
+            `${editedPersonData.name} already exists! Do you want to edit person?`,);
         if (editConfirmed) {
-            personService.updatePerson(id, newPersonData)
-                .then(response => {
-                    console.log(`update respons: ${response.data}`);
+            personService.updatePerson(id, editedPersonData)
+                .then(editedPerson=> {
                     const editedPersons = persons.map(person => {
-                        return person.id === id ? response.data : person;
+                        return person.id === editedPerson.id ? editedPerson : person;
                     })
                     setPersons(editedPersons);
+                    showNotification({
+                            message:`successfully edited person', ${editedPersonData.name}`,
+                            type: "success",
+                        },
+                    );
+                    resetInputFields();
+                })
+                .catch(error => {
+                    console.log(error);
+                    showNotification({
+                        message: `error editing person ${editedPersonData.name}`,
+                        type: "error",
+                    });
                 })
         }
     }
 
+    const createNewPerson = (newPerson) =>{
+        personService.createPerson(newPerson)
+        .then(newPerson => {
+            setPersons(persons.concat(newPerson))
+        })
+        showNotification({
+            message: `successfully created new person ${newPerson.name}!`,
+            type: "success",
+    });
+        resetInputFields();
+    }
+
+    const resetInputFields = () => {
+        setNewName('');
+        setNewNumber('');
+    }
+
+    const showNotification = (notification) => {
+        setNotification(notification);
+        setTimeout(() => {
+            setNotification(null);
+        }, 3000)
+    }
+
+
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification notification={notification} />
             <Filter filter={filter} onChange={handleFilterChange}/>
             <NameForm handleNameChange={handleNameChange}
                       handleNumberChange={handleNumberChange}
