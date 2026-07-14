@@ -1,0 +1,69 @@
+@baseURL = http://localhost:3001/api
+
+### Get all persons
+GET {{baseURL}}/persons
+
+### Get person with id 1
+GET {{baseURL}}/persons/1
+
+### Get person with nonexistent id 66
+GET {{baseURL}}/persons/66
+
+### Get info
+GET {{baseURL}}/info
+
+### Delete person with id 1
+DELETE {{baseURL}}/persons/1
+
+### Get all persons
+GET {{baseURL}}/persons
+
+### Post new person
+POST {{baseURL}}/persons
+Content-Type: application/json
+
+{
+  "name": "Kari",
+  "number": "0400-123123"
+}
+
+### Post existing person
+POST {{baseURL}}/persons
+Content-Type: application/json
+
+{
+  "name": "Kari",
+  "number": "0400-123123"
+}
+
+### Post existing person in lowercase
+POST {{baseURL}}/persons
+Content-Type: application/json
+
+{
+  "name": "kari",
+  "number": "0400-123123"
+}
+
+### Post person without a name
+POST {{baseURL}}/persons
+Content-Type: application/json
+
+{
+  "number": "0400111"
+}
+
+### Post person without a number
+POST {{baseURL}}/persons
+Content-Type: application/json
+
+{
+  "name": "Jari Karinen"
+}
+
+
+### Get all persons
+GET {{baseURL}}/persons
+
+### Get unknown endpoint
+GET {{baseURL}}/monsters

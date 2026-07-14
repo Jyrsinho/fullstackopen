@@ -1,0 +1,16 @@
+@baseURL = http://localhost:3001/api
+
+### Get all notes
+GET {{baseURL}}/notes
+
+### Delete note 2
+DELETE {{baseURL}}/notes
+
+### Add note
+POST {{baseURL}}/notes
+Content-Type: application/json
+
+{
+    "content": "always take babysteps",
+    "important": true
+}
