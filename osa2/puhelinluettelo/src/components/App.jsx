@@ -55,7 +55,7 @@ const App = () => {
                    console.log(error);
                    showNotification({
                        type: "error",
-                       message: `Person ${personToDelete.name} is already deleted!`,
+                       message: error.response.data.error,
                    })
                })
        }

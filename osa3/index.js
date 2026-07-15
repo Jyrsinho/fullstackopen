@@ -35,12 +35,10 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
     const body = req.body;
-    console.log('In Backend creating new person -', req.body);
 
     if (!body.name) {
         return res.status(400).json({error: 'name is required'});
     }
-
     if (!body.number) {
         return res.status(400).json({error: 'number is required'});
     }
@@ -50,13 +48,19 @@ app.post('/api/persons', (req, res) => {
         number: body.number,
         id: String(generateID())
     }
-
     persons = persons.concat(person);
     res.json(person);
 })
 
 app.delete('/api/persons/:id', (req, res) => {
     const id = req.params.id;
+
+    const personToDelete = persons.find(person => person.id === id);
+    if (!personToDelete) {
+        res.status(404).json({error: 'person already deleted'});
+    }
+
+    persons = persons.filter(person => person.id !== id);
 
     res.status(204).end();
 })
