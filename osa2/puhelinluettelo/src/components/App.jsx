@@ -24,8 +24,6 @@ const App = () => {
             })
     }, [])
 
-
-
    const handleNameChange = (event) => {
         setNewName(event.target.value)
    }
@@ -45,9 +43,8 @@ const App = () => {
 
        if (userConfirmedDelete) {
            personService.deletePerson(personId)
-           .then(deletedPerson=> {
-               console.log(`deletedPerson- ${deletedPerson}`);
-               const updatedPersons = persons.filter(person => person.id !== deletedPerson.id);
+           .then ( () => {
+               const updatedPersons = persons.filter(person => person.id !== personId);
                setPersons(updatedPersons);
                showNotification({
                    type: "success",
@@ -68,7 +65,7 @@ const App = () => {
         e.preventDefault();
         const newPerson = {
             name: newName,
-            phone: newNumber,
+            number: newNumber,
         }
 
         const existingPerson = findPersonByName(persons, newPerson.name)
@@ -97,10 +94,10 @@ const App = () => {
                     );
                     resetInputFields();
                 })
-                .catch(error => {
+                .catch((error, res) => {
                     console.log(error);
                     showNotification({
-                        message: `error editing person ${editedPersonData.name}`,
+                        message: res.error,
                         type: "error",
                     });
                 })
@@ -108,14 +105,23 @@ const App = () => {
     }
 
     const createNewPerson = (newPerson) =>{
+        console.log('creating new Person', newPerson);
         personService.createPerson(newPerson)
         .then(newPerson => {
+            console.log('newPerson from promise', newPerson);
             setPersons(persons.concat(newPerson))
-        })
-        showNotification({
-            message: `successfully created new person ${newPerson.name}!`,
-            type: "success",
-    });
+            showNotification({
+                message: `successfully created new person ${newPerson.name}!`,
+                type: "success",
+        })})
+            .catch(error => {
+                const errorMessage = error.response.data.error;
+                showNotification({
+                    message: errorMessage,
+                    type: "error",
+                })
+            })
+
         resetInputFields();
     }
 

@@ -1,14 +1,17 @@
 import axios from 'axios'
-const baseURL = 'http://localhost:3001/persons'
+const baseURL = '/api/persons'
 
 const getAll =  () => {
     return axios.get(baseURL)
         .then(res => res.data)
+        .catch(err => console.log(err));
 }
 
 const createPerson =  (newPerson) => {
+    console.log('in person service creating new Person', newPerson);
     return axios.post(baseURL, newPerson)
     .then(res => {
+        console.log("response from create Person", res);
         return res.data
     })
 }
@@ -28,9 +31,6 @@ const deletePerson =  (id) => {
         .then( res => {
             console.log("res.data - ", res.data);
             return res.data
-        })
-        .catch( err => {
-            console.log("error deleting user", err);
         })
 }
 

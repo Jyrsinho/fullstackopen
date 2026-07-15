@@ -11,6 +11,7 @@ morgan.token('postBody', function (req, res) {
 
 app.use(morgan(":method :url :status :res[content-length] - :response-time ms :postBody"))
 app.use(express.json());
+app.use(express.static('dist'))
 
 app.get('/api/info', (req, res) => {
     const infoHTML = generateInfoHTML();
@@ -34,6 +35,7 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
     const body = req.body;
+    console.log('In Backend creating new person -', req.body);
 
     if (!body.name) {
         return res.status(400).json({error: 'name is required'});
@@ -41,12 +43,6 @@ app.post('/api/persons', (req, res) => {
 
     if (!body.number) {
         return res.status(400).json({error: 'number is required'});
-    }
-
-    const existingPerson = persons.find(person => person.name.toLowerCase() === body.name.toLowerCase())
-
-    if (existingPerson) {
-        return res.status(400).json({error: 'given name is already in PhoneBook'});
     }
 
     const person = {
@@ -61,7 +57,6 @@ app.post('/api/persons', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res) => {
     const id = req.params.id;
-    persons = persons.filter(note => note.id !== id);
 
     res.status(204).end();
 })
