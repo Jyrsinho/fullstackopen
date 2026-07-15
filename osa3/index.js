@@ -4,8 +4,12 @@ const morgan = require("morgan");
 const express = require('express');
 const app = express();
 
-morgan.token('type', function (req, res) { return req.headers['content-type'] })
-app.use(morgan(":type"));
+morgan.token('postBody', function (req, res) {
+    if (req.method !== "POST") return ""
+    return `POST body:${JSON.stringify(req.body)} `
+})
+
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :postBody"))
 app.use(express.json());
 
 app.get('/api/info', (req, res) => {
