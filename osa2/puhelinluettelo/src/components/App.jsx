@@ -94,12 +94,8 @@ const App = () => {
                     );
                     resetInputFields();
                 })
-                .catch((error, res) => {
+                .catch((error ) => {
                     console.log(error);
-                    showNotification({
-                        message: res.error,
-                        type: "error",
-                    });
                 })
         }
     }
