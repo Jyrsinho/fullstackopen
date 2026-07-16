@@ -7,6 +7,15 @@ GET {{baseURL}}/persons
 ### Get person with id 1
 GET {{baseURL}}/persons/1
 
+### Get person with id 6a58bcee3f2e87b8be74dfe0
+GET {{baseURL}}/persons/6a58bcee3f2e87b8be74dfe0
+
+### Delete person with id 6a58bcee3f2e87b8be74dfe0
+DELETE {{baseURL}}/persons/6a58bcee3f2e87b8be74dfe0
+
+### Get person with nonexistng id 6a58bcee3f2e87b8be72dfe0
+GET {{baseURL}}/persons/6a58bcee3f2e87b8be72dfe0
+
 ### Get person with nonexistent id 66
 GET {{baseURL}}/persons/66
 

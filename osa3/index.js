@@ -9,39 +9,42 @@ morgan.token('postBody', function (req, res) {
     return `POST body:${JSON.stringify(req.body)} `
 })
 
-app.use(morgan(":method :url :status :res[content-length] - :response-time ms :postBody"))
-app.use(express.json());
 app.use(express.static('dist'))
+app.use(express.json());
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :postBody"))
 
-app.get('/api/info', (req, res) => {
+app.get('/api/info', (req, res, next) => {
     Person.find({})
         .then(persons => {
             const infoHTML = generateInfoHTML(persons.length);
             res.send(infoHTML);
         })
+    .catch(error => next(error))
 })
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
     Person.find({})
         .then(persons => {
             res.json(persons);
         })
-        .catch(err => console.log(err));
+        .catch(error => next(error));
 
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = req.params.id;
-    const person = persons.find(person => person.id === id);
-
-    if (person) {
-        res.json(person);
-    } else {
-        res.status(404).end();
-    }
+app.get('/api/persons/:id', (req, res, next) => {
+    Person.findById(req.params.id)
+        .then(person => {
+            if (person) {
+                res.json(person);
+            } else {
+                res.status(404).end();
+            }
+        })
+        .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+
+app.post('/api/persons', (req, res, next) => {
     const body = req.body;
 
     if (!body.name) {
@@ -60,22 +63,16 @@ app.post('/api/persons', (req, res) => {
         .then(addedPerson=> {
             res.json(addedPerson);
         })
-        .catch(err => {
-            console.log(err);
-        })
+        .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id;
-
-    const personToDelete = persons.find(person => person.id === id);
-    if (!personToDelete) {
-        res.status(404).json({error: 'person already deleted'});
-    }
-
-    persons = persons.filter(person => person.id !== id);
-
-    res.status(204).end();
+    Person.findByIdAndDelete(id)
+    .then(result => {
+        res.status(204).end()
+    })
+    .catch(err => next(err));
 })
 
 const generateInfoHTML = (amountOfPeople= 0) => {
@@ -86,18 +83,24 @@ const generateInfoHTML = (amountOfPeople= 0) => {
     `
 }
 
-const generateID = () => {
-    function randomIntFromInterval(min, max) { // min and max included
-        return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-    return randomIntFromInterval(1, 1000000);
-}
-
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+
+// tämä tulee kaikkien muiden middlewarejen ja routejen rekisteröinnin jälkeen!
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
