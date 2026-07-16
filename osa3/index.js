@@ -1,8 +1,8 @@
-let persons = require("./persons");
-
+require('dotenv').config();
 const morgan = require("morgan");
 const express = require('express');
 const app = express();
+const Person = require("./models/person");
 
 morgan.token('postBody', function (req, res) {
     if (req.method !== "POST") return ""
@@ -14,12 +14,20 @@ app.use(express.json());
 app.use(express.static('dist'))
 
 app.get('/api/info', (req, res) => {
-    const infoHTML = generateInfoHTML();
-    res.send(infoHTML);
+    Person.find({})
+        .then(persons => {
+            const infoHTML = generateInfoHTML(persons.length);
+            res.send(infoHTML);
+        })
 })
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons);
+    Person.find({})
+        .then(persons => {
+            res.json(persons);
+        })
+        .catch(err => console.log(err));
+
 })
 
 app.get('/api/persons/:id', (req, res) => {
@@ -43,13 +51,18 @@ app.post('/api/persons', (req, res) => {
         return res.status(400).json({error: 'number is required'});
     }
 
-    const person = {
+    const newPerson = new Person({
         name: body.name,
         number: body.number,
-        id: String(generateID())
-    }
-    persons = persons.concat(person);
-    res.json(person);
+    });
+
+    newPerson.save()
+        .then(addedPerson=> {
+            res.json(addedPerson);
+        })
+        .catch(err => {
+            console.log(err);
+        })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -65,10 +78,10 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end();
 })
 
-const generateInfoHTML = () => {
+const generateInfoHTML = (amountOfPeople= 0) => {
     const date = new Date();
     return `
-    <p>Phonebook has info for ${persons.length} persons</p>
+    <p>Phonebook has info for ${amountOfPeople} persons</p>
     <p>${date}</p>
     `
 }
@@ -86,7 +99,7 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`)
     })

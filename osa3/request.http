@@ -1,4 +1,4 @@
-@baseURL = https://fullstackwebdev-tetr.onrender.com/api
+@baseURL = localhost:3001/api
 
 
 ### Get all persons
