@@ -55,7 +55,7 @@ const App = () => {
                    console.log(error);
                    showNotification({
                        type: "error",
-                       message: error.response.data.error,
+                       message: error.response.data.message,
                    })
                })
        }
@@ -95,13 +95,18 @@ const App = () => {
                     resetInputFields();
                 })
                 .catch((error ) => {
-                    console.log(error);
+                    console.log('Error inside UI creating new Person')
+                    console.log(error.response.data);
+                    const errorMessage = error.response.data.message;
+                    showNotification({
+                        message: errorMessage,
+                        type: "error",
+                    })
                 })
         }
     }
 
     const createNewPerson = (newPerson) =>{
-        console.log('creating new Person', newPerson);
         personService.createPerson(newPerson)
         .then(newPerson => {
             console.log('newPerson from promise', newPerson);
@@ -111,13 +116,14 @@ const App = () => {
                 type: "success",
         })})
             .catch(error => {
-                const errorMessage = error.response.data.error;
+                console.log('Error inside UI creating new Person');
+                console.log(error);
+                const errorMessage = error.response.data.message;
                 showNotification({
                     message: errorMessage,
                     type: "error",
                 })
             })
-
         resetInputFields();
     }
 

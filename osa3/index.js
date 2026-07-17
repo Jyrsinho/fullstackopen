@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const express = require('express');
 const app = express();
 const Person = require("./models/person");
+const e = require("express");
 
 morgan.token('postBody', function (req, res) {
     if (req.method !== "POST") return ""
@@ -108,14 +109,16 @@ const unknownEndpoint = (request, response) => {
 app.use(unknownEndpoint)
 
 const errorHandler = (error, request, response, next) => {
+    console.log('inside error handler');
     console.error(error.message)
+    console.log("error.name - ", error.name);
 
     if (error.name === 'CastError') {
-        return response.status(400).send({ error: 'malformatted id' })
+        return response.status(400).send({ message: 'malformatted id' })
     }
 
     if (error.name ==='ValidationError') {
-        return response.status(400).send({ error: 'invalid name or number' })
+        return response.status(400).send( { message: error.message} );
     }
 
     next(error)
