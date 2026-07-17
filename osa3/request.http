@@ -37,6 +37,15 @@ Content-Type: application/json
   "number": "0400-123123"
 }
 
+### Post person with too short name
+POST {{baseURL}}/persons
+Content-Type: application/json
+
+{
+  "name": "O",
+  "number": "0400-123123"
+}
+
 ### Post existing person
 POST {{baseURL}}/persons
 Content-Type: application/json
