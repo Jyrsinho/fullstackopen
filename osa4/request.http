@@ -1,0 +1,16 @@
+@baseURL = localhost:3001/api
+### GET all blogs
+GET {{baseURL}}/blogs
+
+### POST a blog
+POST {{baseURL}}/blogs
+Content-Type: application/json
+
+{
+  "title": "Jotain paskaa",
+  "author": "Joku paska",
+  "url": "jotainpaskaa.com",
+  "likes": 0
+}
+
+###
