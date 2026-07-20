@@ -118,6 +118,7 @@ const errorHandler = (error, request, response, next) => {
     }
 
     if (error.name ==='ValidationError') {
+        console.log('Validation Error ')
         return response.status(400).send( { message: error.message} );
     }
 

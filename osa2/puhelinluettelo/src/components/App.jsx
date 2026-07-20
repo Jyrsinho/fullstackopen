@@ -95,7 +95,7 @@ const App = () => {
                     resetInputFields();
                 })
                 .catch((error ) => {
-                    console.log('Error inside UI creating new Person')
+                    console.log('Error inside UI editing new Person')
                     console.log(error.response.data);
                     const errorMessage = error.response.data.message;
                     showNotification({
@@ -114,17 +114,21 @@ const App = () => {
             showNotification({
                 message: `successfully created new person ${newPerson.name}!`,
                 type: "success",
-        })})
-            .catch(error => {
-                console.log('Error inside UI creating new Person');
-                console.log(error);
-                const errorMessage = error.response.data.message;
-                showNotification({
-                    message: errorMessage,
-                    type: "error",
-                })
             })
-        resetInputFields();
+            resetInputFields();
+        })
+        .catch(error => {
+            console.log('Error inside UI creating new Person');
+            console.log('error', error);
+            console.log('error.response', error.response);
+            console.log('error.response.data', error.response.data);
+            console.log('error.response.data.message', error.response.data.message);
+            const errorMessage = error.response.data.message;
+            showNotification({
+                message: errorMessage,
+                type: "error",
+            })
+        })
     }
 
     const resetInputFields = () => {
