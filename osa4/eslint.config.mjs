@@ -3,6 +3,11 @@ import js from "@eslint/js";
 import stylisticJs from '@stylistic/eslint-plugin'
 
 export default [
+    {
+        ignores: [
+            '**/*.test.js',
+        ],
+    },
     js.configs.recommended,
     {
         files: ['**/*.js'],
