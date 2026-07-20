@@ -48,10 +48,10 @@ app.post('/api/persons', (req, res, next) => {
     const body = req.body
 
     if (!body.name) {
-        return res.status(400).json({error: 'name is required'})
+        return res.status(400).json({ error: 'name is required' })
     }
     if (!body.number) {
-        return res.status(400).json({error: 'number is required'})
+        return res.status(400).json({ error: 'number is required' })
     }
 
     const newPerson = new Person({
@@ -60,14 +60,14 @@ app.post('/api/persons', (req, res, next) => {
     })
 
     newPerson.save()
-        .then(addedPerson=> {
+        .then( addedPerson => {
             res.json(addedPerson)
         })
         .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
-    const {name, number} = req.body
+    const { name, number } = req.body
 
     Person.findById(req.params.id)
         .then(person => {
@@ -76,7 +76,7 @@ app.put('/api/persons/:id', (req, res, next) => {
             person.name = name
             person.number = number
             return person.save()
-                .then(updatedPerson=> {
+                .then( updatedPerson => {
                     res.json(updatedPerson)
                 })
         })
@@ -117,7 +117,7 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name ==='ValidationError') {
         console.log('Validation Error ')
-        return response.status(400).send( { message: error.message} )
+        return response.status(400).send( { message: error.message } )
     }
 
     next(error)

@@ -3,14 +3,14 @@ mongoose.set('strictQuery', false)
 
 const url = process.env.MONGODB_URI
 
-console.log(`connecting to ${url}`);
+console.log(`connecting to ${url}`)
 
 mongoose.connect(url, { family: 4 })
     .then(() => {
-        console.log(`Connected to ${url}`);
+        console.log(`Connected to ${url}`)
     })
     .catch((err) => {
-        console.error(err);
+        console.error(err)
     })
 
 
@@ -30,7 +30,7 @@ const personSchema = new mongoose.Schema({
             },
             message: props => `${props.value} is not a valid phone number`
         }
-}});
+    } })
 
 personSchema.set('toJSON', {
     transform: (document, returnedObject) => {
