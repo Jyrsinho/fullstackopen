@@ -13,4 +13,6 @@ Content-Type: application/json
   "likes": 0
 }
 
-###
+
+### GET unkown endpoint
+GET {{baseURL}}/blogs/simaa
