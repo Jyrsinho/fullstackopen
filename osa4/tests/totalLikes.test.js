@@ -58,9 +58,19 @@ describe('totalLikes', () => {
         assert.strictEqual(result, 0)
     })
     test('should return the amount of likes of one blog when blogs has one blog', () => {
-        const listWithOneBlog = blogs.splice(1)
+        const listWithOneBlog = blogs.toSpliced(1)
 
         const result = listHelper.totalLikes(listWithOneBlog)
         assert.strictEqual(result, 7)
+    })
+    test('should return the sum of likes of two blogs when blogs has two blogs', () => {
+        const listWithTwoBlogs = blogs.toSpliced(2);
+
+        const result = listHelper.totalLikes(listWithTwoBlogs)
+        assert.strictEqual(result, 12)
+    })
+    test('should return the sum of likes when multiple blogs', () => {
+        const result = listHelper.totalLikes(blogs)
+        assert.strictEqual(result, 36)
     })
 })
