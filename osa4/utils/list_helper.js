@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const {hasToStringMethod} = require("fast-check");
+const {reduce} = require("lodash/collection");
 
 const totalLikes = (blogs) => {
     const countLikes = (prev, current) => {
@@ -40,4 +41,28 @@ const mostBlogs = (blogs) => {
     }
 }
 
-module.exports = { totalLikes, favoriteBlog, mostBlogs}
+/*
+Funktio selvittää kirjoittajan, jonka blogeilla on eniten tykkäyksiä.
+Funktion paluuarvo kertoo myös suosikkibloggaajan likejen yhteenlasketun määrän:
+ */
+const mostLikes = (blogs) => {
+    if (blogs.length === 0) return null
+
+    const groupedByAuthor = _.groupBy(blogs, 'author')
+
+    const authorLikesSummed = Object.entries(groupedByAuthor).map(([author, authorBlogArray]) => {
+        return {
+            author,
+            likes: _.sumBy(authorBlogArray, 'likes')
+        }
+    })
+    
+    const mostLiked = _.maxBy(authorLikesSummed, (author) =>author.likes )
+
+    return {
+        author: mostLiked.author,
+        likes: mostLiked.likes,
+    }
+}
+
+module.exports = { totalLikes, favoriteBlog, mostBlogs, mostLikes }

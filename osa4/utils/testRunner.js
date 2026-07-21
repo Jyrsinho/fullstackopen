@@ -60,6 +60,6 @@ const testBlogs = blogs.concat({
     likes: 10,
     __v: 0
 })
-const mostBlogs = listHelper.mostBlogs(testBlogs)
+const mostLikes = listHelper.mostLikes(blogs)
 
-console.log(mostBlogs)
+console.log(mostLikes)
