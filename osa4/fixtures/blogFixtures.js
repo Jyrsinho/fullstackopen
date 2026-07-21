@@ -1,7 +1,4 @@
-const listHelper = require ("./list_helper")
-;
-
-const blogs = [
+const initialBlogs = [
     {
         _id: "5a422a851b54a676234d17f7",
         title: "React patterns",
@@ -51,15 +48,27 @@ const blogs = [
         __v: 0
     }
 ]
+const listWithOneBlog = initialBlogs.toSpliced(1)
+const listWithTwoFavorites = [
+    {
+        _id: "5a422ba71b54a676234d17fb",
+        title: "TDD harms architecture",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
+        likes: 2,
+        __v: 0
+    },
+    {
+        _id: "5a422bc61b54a676234d17fc",
+        title: "Type wars",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+        likes: 2,
+        __v: 0
+    }
+]
 
-const testBlogs = blogs.concat({
-    _id: "5a422b891b54a676234d16fa",
-    title: "Second class tests",
-    author: "Edsger W. Dijkstra",
-    url: "http://sometestblog.htmll",
-    likes: 10,
-    __v: 0
-})
-const mostLikes = listHelper.mostLikes(blogs)
+const listWithDijkstrasBlogs = initialBlogs.filter((blog) => blog.author === 'Edsger W. Dijkstra')
+const listWithTwoWriters = listWithOneBlog.concat(listWithDijkstrasBlogs)
 
-console.log(mostLikes)
+module.exports = {  initialBlogs, listWithTwoFavorites, listWithOneBlog, listWithTwoWriters, listWithDijkstrasBlogs }

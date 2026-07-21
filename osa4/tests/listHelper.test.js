@@ -1,101 +1,36 @@
 const { test, describe } = require('node:test')
 const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
-
-const blogs = [
-    {
-        _id: "5a422a851b54a676234d17f7",
-        title: "React patterns",
-        author: "Michael Chan",
-        url: "https://reactpatterns.com/",
-        likes: 7,
-        __v: 0
-    },
-    {
-        _id: "5a422aa71b54a676234d17f8",
-        title: "Go To Statement Considered Harmful",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
-        likes: 5,
-        __v: 0
-    },
-    {
-        _id: "5a422b3a1b54a676234d17f9",
-        title: "Canonical string reduction",
-        author: "Edsger W. Dijkstra",
-        url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-        likes: 12,
-        __v: 0
-    },
-    {
-        _id: "5a422b891b54a676234d17fa",
-        title: "First class tests",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
-        likes: 10,
-        __v: 0
-    },
-    {
-        _id: "5a422ba71b54a676234d17fb",
-        title: "TDD harms architecture",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-        likes: 0,
-        __v: 0
-    },
-    {
-        _id: "5a422bc61b54a676234d17fc",
-        title: "Type wars",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-        likes: 2,
-        __v: 0
-    }
-]
-const listWithOneBlog = blogs.toSpliced(1)
-const listWithTwoFavorites = [
-    {
-        _id: "5a422ba71b54a676234d17fb",
-        title: "TDD harms architecture",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html",
-        likes: 2,
-        __v: 0
-    },
-    {
-        _id: "5a422bc61b54a676234d17fc",
-        title: "Type wars",
-        author: "Robert C. Martin",
-        url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
-        likes: 2,
-        __v: 0
-    }
-]
-const listWithDijkstrasBlogs = blogs.filter((blog) => blog.author === 'Edsger W. Dijkstra')
-const listWithTwoWriters = listWithOneBlog.concat(listWithDijkstrasBlogs)
+const {
+    listWithOneBlog,
+    initialBlogs,
+    listWithTwoFavorites,
+    listWithDijkstrasBlogs,
+    listWithTwoWriters
+} = require("../fixtures/blogFixtures");
 
 describe('totalLikes', () => {
-    test('should return zero when no blogs', () => {
+    test('should return zero when no initialBlogs', () => {
         const result = listHelper.totalLikes([])
         assert.strictEqual(result, 0)
     })
-    test('should return the amount of likes of one blog when blogs has one blog', () => {
+    test('should return the amount of likes of one blog when initialBlogs has one blog', () => {
         const result = listHelper.totalLikes(listWithOneBlog)
         assert.strictEqual(result, 7)
     })
-    test('should return the sum of likes of two blogs when blogs has two blogs', () => {
-        const listWithTwoBlogs = blogs.toSpliced(2);
+    test('should return the sum of likes of two initialBlogs when initialBlogs has two initialBlogs', () => {
+        const listWithTwoBlogs = initialBlogs.toSpliced(2);
 
         const result = listHelper.totalLikes(listWithTwoBlogs)
         assert.strictEqual(result, 12)
     })
-    test('should return the sum of likes when multiple blogs', () => {
-        const result = listHelper.totalLikes(blogs)
+    test('should return the sum of likes when multiple initialBlogs', () => {
+        const result = listHelper.totalLikes(initialBlogs)
         assert.strictEqual(result, 36)
     })
 })
 describe('favoriteBlog', () => {
-    test('should return null when no blogs', () => {
+    test('should return null when no initialBlogs', () => {
         const result = listHelper.favoriteBlog([]);
         assert.strictEqual(result, null)
     })
@@ -104,19 +39,19 @@ describe('favoriteBlog', () => {
         const firstBlog = listWithOneBlog[0]
         assert.deepStrictEqual(result, firstBlog )
     })
-    test('test should return the blog with most likes when multiple blogs', () => {
-        const result = listHelper.favoriteBlog(blogs)
-        const mostLikedBlog = blogs[2]
+    test('test should return the blog with most likes when multiple initialBlogs', () => {
+        const result = listHelper.favoriteBlog(initialBlogs)
+        const mostLikedBlog = initialBlogs[2]
         assert.deepStrictEqual(result, mostLikedBlog)
     })
-    test('should return the first blog with most likes when multiple blogs have most likes', () => {
+    test('should return the first blog with most likes when multiple initialBlogs have most likes', () => {
         const result = listHelper.favoriteBlog(listWithTwoFavorites);
         const mostLikedBlog = listWithTwoFavorites[0]
         assert.deepStrictEqual(result, mostLikedBlog)
     })
 })
 describe('mostBlogs', () => {
-    test('should return null when no blogs', () => {
+    test('should return null when no initialBlogs', () => {
         const result = listHelper.mostBlogs([])
         assert.deepStrictEqual(result, null)
     })
@@ -128,7 +63,7 @@ describe('mostBlogs', () => {
         }
         assert.deepStrictEqual(result, expected)
     })
-    test('should return the count of writers blogs when one writer with multiple blogs', () => {
+    test('should return the count of writers initialBlogs when one writer with multiple initialBlogs', () => {
         const result = listHelper.mostBlogs(listWithDijkstrasBlogs)
         const expected = {
             author: "Edsger W. Dijkstra",
@@ -136,7 +71,7 @@ describe('mostBlogs', () => {
         }
         assert.deepStrictEqual(result, expected)
     })
-    test('should return the name and number of blogs when two authors', () => {
+    test('should return the name and number of initialBlogs when two authors', () => {
         const result = listHelper.mostBlogs(listWithTwoWriters)
         const expected = {
             author: "Edsger W. Dijkstra",
@@ -144,8 +79,8 @@ describe('mostBlogs', () => {
         }
         assert.deepStrictEqual(result, expected)
     })
-    test('should return the name and number of blogs when multiple authors', () => {
-        const result = listHelper.mostBlogs(blogs)
+    test('should return the name and number of initialBlogs when multiple authors', () => {
+        const result = listHelper.mostBlogs(initialBlogs)
         const expected = {
             author: "Robert C. Martin",
             blogs: 3
@@ -154,7 +89,7 @@ describe('mostBlogs', () => {
     })
 })
 describe('mostLikes', () => {
-    test('should return null when no blogs', () => {
+    test('should return null when no initialBlogs', () => {
         const result = listHelper.mostLikes([])
         assert.strictEqual(result, null)
     })
@@ -166,7 +101,7 @@ describe('mostLikes', () => {
         }
         assert.deepStrictEqual(result, expected)
     })
-    test('should return the writers when one writer in blogs', () => {
+    test('should return the writers when one writer in initialBlogs', () => {
         const result = listHelper.mostLikes(listWithDijkstrasBlogs)
         const expected = {
             author: "Edsger W. Dijkstra",
@@ -183,7 +118,7 @@ describe('mostLikes', () => {
         assert.deepStrictEqual(result, expected)
     })
     test('should return the name and number of likes when multiple authors', () => {
-        const result = listHelper.mostLikes(blogs);
+        const result = listHelper.mostLikes(initialBlogs);
         const expected = {
             author: "Edsger W. Dijkstra",
             likes: 17

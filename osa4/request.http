@@ -2,6 +2,9 @@
 ### GET all blogs
 GET {{baseURL}}/blogs
 
+### GET One blog
+GET {{baseURL}}/blogs/5a422a851b54a676234d17f7
+
 ### POST a blog
 POST {{baseURL}}/blogs
 Content-Type: application/json

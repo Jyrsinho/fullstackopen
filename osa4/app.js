@@ -4,11 +4,10 @@ const config = require('./utils/config')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const blogsRouter = require('./controllers/blogs')
-const { requestLogger } = require('./utils/middleware')
+const { requestLogger, responseLogger} = require('./utils/middleware')
 
 const app = express()
 logger.info('Connecting to DB...')
-app.use(express.json())
 
 mongoose
     .connect(config.MONGODB_URI, { family: 4 })
