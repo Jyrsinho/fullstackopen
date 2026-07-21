@@ -49,6 +49,22 @@ test('should add a blog', async () => {
     assert.strictEqual(response.body.length, 2)
     assert(authors.includes(newBlog.author))
     })
+test('if likes not given should give blog zero  likes', async () => {
+    const newBlog = {
+        author: 'Joku Kova Koodari',
+        title: 'Koodaaminen on kuin saunominen - hikistä',
+        url: 'omatkotisivut.com',
+    }
+     const response = await api
+         .post('/api/blogs')
+         .send(newBlog)
+         .expect(201)
+         .expect('Content-Type', /application\/json/)
+
+    const savedBlog = response.body
+    assert.strictEqual(savedBlog.likes, 0)
+
+})
 
 after(async () => {
     await mongoose.connection.close()
