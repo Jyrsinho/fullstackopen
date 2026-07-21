@@ -5,4 +5,18 @@ const totalLikes = (blogs) => {
     return blogs.reduce(countLikes, 0)
 }
 
-module.exports = { totalLikes }
+const favoriteBlog = (blogs) => {
+    if (blogs.length === 0) return null
+
+    const compareLikes = (prev, current) => {
+        if (prev.likes < current.likes) return 1
+        if (prev.likes > current.likes) return -1
+        if (prev.likes === current.likes) return 0
+    }
+
+    const sortedByLikes = blogs.toSorted(compareLikes)
+
+    return sortedByLikes[0]
+}
+
+module.exports = { totalLikes, favoriteBlog }
