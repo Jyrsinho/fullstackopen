@@ -5,6 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
 const {initialBlogs} = require("../fixtures/blogFixtures");
+const helper = require('./test_helper')
 
 const api = supertest(app)
 
@@ -63,6 +64,8 @@ test('if likes not given should give blog zero  likes', async () => {
 
     const savedBlog = response.body
     assert.strictEqual(savedBlog.likes, 0)
+})
+test('should not give 400 error when posting a blog without a title ', async () => {
 
 })
 
