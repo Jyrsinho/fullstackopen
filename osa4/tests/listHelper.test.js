@@ -71,6 +71,8 @@ const listWithTwoFavorites = [
         __v: 0
     }
 ]
+const listWithDijkstrasBlogs = blogs.filter((blog) => blog.author === 'Edsger W. Dijkstra')
+const listWithTwoWriters = listWithOneBlog.concat(listWithDijkstrasBlogs)
 
 describe('totalLikes', () => {
     test('should return zero when no blogs', () => {
@@ -111,5 +113,43 @@ describe('favoriteBlog', () => {
         const result = listHelper.favoriteBlog(listWithTwoFavorites);
         const mostLikedBlog = listWithTwoFavorites[0]
         assert.deepStrictEqual(result, mostLikedBlog)
+    })
+})
+describe('mostBlogs', () => {
+    test('should return null when no blogs', () => {
+        const result = listHelper.mostBlogs([])
+        assert.deepStrictEqual(result, null)
+    })
+    test('should return the first writer when one blog', () => {
+        const result = listHelper.mostBlogs(listWithOneBlog)
+        const expected = {
+            author: "Michael Chan",
+            blogs: 1
+        }
+        assert.deepStrictEqual(result, expected)
+    })
+    test('should return the count of writers blogs when one writer with multiple blogs', () => {
+        const result = listHelper.mostBlogs(listWithDijkstrasBlogs)
+        const expected = {
+            author: "Edsger W. Dijkstra",
+            blogs: 2
+        }
+        assert.deepStrictEqual(result, expected)
+    })
+    test('should return the name and number of blogs when two authors', () => {
+        const result = listHelper.mostBlogs(listWithTwoWriters)
+        const expected = {
+            author: "Edsger W. Dijkstra",
+            blogs: 2
+        }
+        assert.deepStrictEqual(result, expected)
+    })
+    test('should return the name and number of blogs when multiple authors', () => {
+        const result = listHelper.mostBlogs(blogs)
+        const expected = {
+            author: "Robert C. Martin",
+            blogs: 3
+        }
+        assert.deepStrictEqual(result, expected)
     })
 })
