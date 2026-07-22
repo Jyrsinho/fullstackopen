@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
-const {initialBlogs, newTestBlog} = require("./fixtures/blogFixtures");
+const {initialBlogs, newTestBlog, invalidId} = require("./fixtures/blogFixtures");
 const helper = require('./test_helper')
 
 const api = supertest(app)
@@ -95,22 +95,17 @@ describe('when there is initially some blogs saved', () => {
             assert(!ids.includes(blogToDelete.id))
         })
         test('fails with 404 if id is invalid', async () => {
-            const invalidId = '"5x422xx61x54x676234x17xx",'
             await api.delete(`/api/blogs/${invalidId}`).expect(404)
         })
     })
     describe('updating a blog', async () => {
-        test.only('succeeds with 200 if id is valid', async () => {
+        test('succeeds with 200 if id is valid', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToUpdate = blogsAtStart[0]
             const updatedBlog = {
                 ...blogToUpdate,
                 author: 'Johnny Programmer'
             }
-            console.log('Blog to Update:')
-            console.log(blogToUpdate)
-            console.log('UpdatedBlog: ---')
-            console.log(updatedBlog)
 
             await api
                 .put(`/api/blogs/${blogToUpdate.id}`)
@@ -122,6 +117,19 @@ describe('when there is initially some blogs saved', () => {
 
             assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
             assert(authors.includes(updatedBlog.author))
+        })
+        test('fails with 404 if id is invalid', async () => {
+            const blogsAtStart = await helper.blogsInDB()
+            const blogToUpdate = blogsAtStart[0]
+            const updatedBlog = {
+                ...blogToUpdate,
+                author: 'Johnny Programmer'
+            }
+
+            await api
+            .put(`/api/blogs/${invalidId}`)
+            .send(updatedBlog)
+            .expect(404)
         })
     })
     after(async () => {

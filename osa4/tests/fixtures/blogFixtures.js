@@ -78,11 +78,14 @@ const newTestBlog = {
     likes: 10
 }
 
+const invalidId = '"5x422xx61x54x676234x17xx",'
+
 module.exports = {
     initialBlogs,
     listWithTwoFavorites,
     listWithOneBlog,
     listWithTwoWriters,
     listWithDijkstrasBlogs,
-    newTestBlog
+    newTestBlog,
+    invalidId
 }
