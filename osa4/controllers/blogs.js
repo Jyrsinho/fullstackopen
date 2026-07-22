@@ -29,10 +29,7 @@ blogsRouter.put('/:id', async (request, response) => {
     const body = request.body
 
     const blog = await Blog.findById(request.params.id)
-    console.log('BLOG:')
-    console.log(blog)
     if (!blog) {
-        console.log('NO BLOG - LETS RETURN ---!!!')
         return response.status(404).end()
     }
 
