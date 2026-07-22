@@ -71,4 +71,18 @@ const listWithTwoFavorites = [
 const listWithDijkstrasBlogs = initialBlogs.filter((blog) => blog.author === 'Edsger W. Dijkstra')
 const listWithTwoWriters = listWithOneBlog.concat(listWithDijkstrasBlogs)
 
-module.exports = {  initialBlogs, listWithTwoFavorites, listWithOneBlog, listWithTwoWriters, listWithDijkstrasBlogs }
+const newTestBlog = {
+    author: 'Joku Kova Koodari',
+    title: 'Koodaaminen on kuin saunominen - hikistä',
+    url: 'omatkotisivut.com',
+    likes: 10
+}
+
+module.exports = {
+    initialBlogs,
+    listWithTwoFavorites,
+    listWithOneBlog,
+    listWithTwoWriters,
+    listWithDijkstrasBlogs,
+    newTestBlog
+}

@@ -7,7 +7,7 @@ const {
     listWithTwoFavorites,
     listWithDijkstrasBlogs,
     listWithTwoWriters
-} = require("../fixtures/blogFixtures");
+} = require("./fixtures/blogFixtures");
 
 describe('totalLikes', () => {
     test('should return zero when no initialBlogs', () => {

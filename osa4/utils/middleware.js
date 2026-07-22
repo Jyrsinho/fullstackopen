@@ -13,6 +13,9 @@ const unknownEndpoint = (request, response) => {
 }
 
 const errorHandler = (error, request, response, next) => {
+    if (error.name === 'ValidationError') {
+        return response.status(400).send({ error: 'invalid blog' })
+    }
     logger.error(error.message)
     response.status(404).send({ error: 'unknown error' })
 
