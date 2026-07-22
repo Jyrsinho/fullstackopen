@@ -16,6 +16,14 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'ValidationError') {
         return response.status(400).send({ error: 'invalid blog' })
     }
+    if (
+        error.name === 'MongoServerError' &&
+        error.message.includes('E11000 duplicate key error')
+    ) {
+        return response
+            .status(400)
+            .json({ error: 'username must be unique' })
+    }
     logger.error(error.message)
     response.status(404).send({ error: 'unknown error' })
 

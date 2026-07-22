@@ -16,6 +16,13 @@ const initialUsers = [
     }
 ]
 
+const newTestUser = {
+    name: 'Tim Testuser',
+    username: 'testuser',
+    password: '123abc321'
+}
+
 module.exports = {
-    initialUsers
+    initialUsers,
+    newTestUser,
 }

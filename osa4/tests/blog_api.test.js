@@ -6,6 +6,7 @@ const app = require('../app')
 const Blog = require('../models/blog')
 const {initialBlogs, newTestBlog, invalidId} = require("./fixtures/blogFixtures");
 const helper = require('./test_helper')
+const {all} = require("express/lib/application");
 
 const api = supertest(app)
 
@@ -21,8 +22,13 @@ describe('when there is initially some blogs saved', () => {
             .expect('Content-Type', /application\/json/)
     })
     test('all blogs are returned', async () => {
-        const blogsAtEnd = await helper.blogsInDB()
-        assert.strictEqual(blogsAtEnd.length, initialBlogs.length)
+        const response = await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const allBlogs = response.body
+        assert.strictEqual(allBlogs.length, initialBlogs.length)
     })
     test('note should have key named id', async () => {
         const blogsAtEnd = await helper.blogsInDB()
