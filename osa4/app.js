@@ -18,7 +18,10 @@ mongoose
         logger.error('error connection to MongoDB:', error.message)
     })
 app.use(express.json())
-app.use(requestLogger)
+
+if (process.env.NODE_ENV === 'development' ) {
+    app.use(requestLogger)
+}
 
 app.use('/api/blogs', blogsRouter)
 
