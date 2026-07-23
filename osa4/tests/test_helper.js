@@ -47,6 +47,11 @@ const getTestsBlogWithUserReference = async () => {
     }
 }
 
+const getUsersPassword = (userID) => {
+    const user = initialUsers.find((user) => user.id === userID)
+    return user.password
+}
+
 module.exports = {
-    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, initializeDB
+    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, initializeDB, getUsersPassword,
 }
