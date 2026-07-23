@@ -9,23 +9,21 @@ const requestLogger = (request, response, next) => {
 }
 
 const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
+    response.status(404).json({ error: 'unknown endpoint' })
 }
 
 const errorHandler = (error, request, response, next) => {
-    if (error.name === 'ValidationError') {
-        return response.status(400).send({ error: 'invalid blog' })
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
     }
-    if (
-        error.name === 'MongoServerError' &&
-        error.message.includes('E11000 duplicate key error')
-    ) {
+    if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
+    }
+    if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')) {
         return response
             .status(400)
             .json({ error: 'username must be unique' })
     }
-    logger.error(error.message)
-    response.status(404).send({ error: 'unknown error' })
 
     next(error)
 }

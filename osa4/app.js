@@ -4,8 +4,8 @@ const config = require('./utils/config')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const blogsRouter = require('./controllers/blogs')
-const { requestLogger, responseLogger} = require('./utils/middleware')
-const usersRouter = require("./controllers/users");
+const { requestLogger } = require('./utils/middleware')
+const usersRouter = require('./controllers/users')
 
 const app = express()
 logger.info('Connecting to DB...')

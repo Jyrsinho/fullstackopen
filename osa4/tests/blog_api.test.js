@@ -4,16 +4,21 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const {initialBlogs, newTestBlog, invalidId} = require("./fixtures/blogFixtures");
 const helper = require('./test_helper')
-const {all} = require("express/lib/application");
+const {initialUsers} = require("./fixtures/userFixtures");
 
 const api = supertest(app)
 
-describe('when there is initially some blogs saved', () => {
+describe('when there is initially some blogs and users saved', () => {
     beforeEach(async () => {
         await Blog.deleteMany({})
         await Blog.insertMany(initialBlogs)
+
+        await User.deleteMany({})
+        await User.insertMany(initialUsers)
+
     })
     test('blogs are returned as json', async () => {
         await api
@@ -30,16 +35,17 @@ describe('when there is initially some blogs saved', () => {
         const allBlogs = response.body
         assert.strictEqual(allBlogs.length, initialBlogs.length)
     })
-    test('note should have key named id', async () => {
+    test('blog should have key named id', async () => {
         const blogsAtEnd = await helper.blogsInDB()
         const firstBlog = blogsAtEnd[0]
         assert.ok(firstBlog.id)
     })
     describe('addition of a new blog', async () => {
         test('should add a blog', async () => {
+            const blogWithUser = await helper.getTestsBlogWithUserReference()
             await api
                 .post('/api/blogs')
-                .send(newTestBlog)
+                .send(blogWithUser)
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
 
@@ -49,8 +55,24 @@ describe('when there is initially some blogs saved', () => {
             assert.strictEqual(blogsAtEnd.length, initialBlogs.length + 1)
             assert(authors.includes(newTestBlog.author))
         })
+        test.only('succeeds with user attached to a blog', async () => {
+            const blogsAtStart = await helper.blogsInDB()
+            const testBlogWithUser = await helper.getTestsBlogWithUserReference()
+
+            const response = await api
+                .post('/api/blogs')
+                .send(testBlogWithUser)
+                .expect(201)
+                .expect('Content-Type', /application\/json/)
+
+            const user = response.body.user
+            const blogsAtEnd = await helper.blogsInDB()
+            assert(user)
+            assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
+
+        })
         test('if likes not given should give blog zero  likes', async () => {
-            const testBlogWithoutLikes = {...newTestBlog}
+            const testBlogWithoutLikes = await helper.getTestsBlogWithUserReference()
             delete testBlogWithoutLikes['likes']
             const response = await api
                 .post('/api/blogs')
@@ -62,32 +84,37 @@ describe('when there is initially some blogs saved', () => {
             assert.strictEqual(savedBlog.likes, 0)
         })
         test('blog without an URL is not added ', async () => {
-            const testBlogWithoutURL = {...newTestBlog}
+            const testBlogWithoutURL = await helper.getTestsBlogWithUserReference()
             delete testBlogWithoutURL['url']
-            await api
+            const response = await api
                 .post('/api/blogs')
                 .send(testBlogWithoutURL)
                 .expect(400)
                 .expect('Content-Type', /application\/json/)
 
+            const error = response.body.error
             const blogsAtEnd = await helper.blogsInDB()
+            assert(error.includes('URL is required'))
             assert.strictEqual(blogsAtEnd.length, initialBlogs.length)
 
         })
         test('blog without a title is not added', async () => {
-            const testBlogWithoutTitle = {...newTestBlog}
+            const testBlogWithoutTitle = await helper.getTestsBlogWithUserReference()
             delete testBlogWithoutTitle['title']
-            await api
+            const response = await api
                 .post('/api/blogs')
                 .send(testBlogWithoutTitle)
                 .expect(400)
                 .expect('Content-Type', /application\/json/)
+            const error = response.body.error
 
             const blogsAtEnd = await helper.blogsInDB()
+            assert(error.includes('Title is required'))
             assert.strictEqual(blogsAtEnd.length, initialBlogs.length)
 
-        })})
-    describe('deletion of a blog', async () => {
+        })
+    })
+    describe('deletion of a blog', () => {
         test('succeeds with 204 if id is valid', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToDelete = blogsAtStart[0]
@@ -100,11 +127,11 @@ describe('when there is initially some blogs saved', () => {
             assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
             assert(!ids.includes(blogToDelete.id))
         })
-        test('fails with 404 if id is invalid', async () => {
-            await api.delete(`/api/blogs/${invalidId}`).expect(404)
+        test('fails with 400 if id is invalid', async () => {
+            await api.delete(`/api/blogs/${invalidId}`).expect(400)
         })
     })
-    describe('updating a blog', async () => {
+    describe('updating a blog', () => {
         test('succeeds with 200 if id is valid', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToUpdate = blogsAtStart[0]
@@ -124,7 +151,7 @@ describe('when there is initially some blogs saved', () => {
             assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
             assert(authors.includes(updatedBlog.author))
         })
-        test('fails with 404 if id is invalid', async () => {
+        test('fails with 400 if id is invalid', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToUpdate = blogsAtStart[0]
             const updatedBlog = {
@@ -133,12 +160,13 @@ describe('when there is initially some blogs saved', () => {
             }
 
             await api
-            .put(`/api/blogs/${invalidId}`)
-            .send(updatedBlog)
-            .expect(404)
+                .put(`/api/blogs/${invalidId}`)
+                .send(updatedBlog)
+                .expect(400)
         })
     })
-    after(async () => {
-            await mongoose.connection.close()
     })
+after(async () => {
+    await mongoose.connection.close()
+
 })

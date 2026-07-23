@@ -6,11 +6,10 @@ const helper = require("./test_helper");
 const {initialUsers, newTestUser} = require("./fixtures/userFixtures")
 const supertest = require("supertest");
 const app = require("../app")
-const {error} = require("../utils/logger");
 
 const api = supertest(app)
 describe('when there is one user saved', () => {
-    beforeEach( async () => {
+    beforeEach(async () => {
         await User.deleteMany({})
         await User.insertMany(initialUsers)
     })
@@ -36,21 +35,22 @@ describe('when there is one user saved', () => {
             const usersAfter = await helper.usersInDB()
             const usernames = usersAfter.map(user => user.username)
             assert(usernames.includes(newTestUser.username))
-            assert.strictEqual(usersAfter.length, usersBefore.length + 1 )
+            assert.strictEqual(usersAfter.length, usersBefore.length + 1)
         })
         test('should not add user without a username', async () => {
             const usersBefore = await helper.usersInDB()
             const userToAdd = {...newTestUser}
             delete userToAdd.username
 
-            await api
-            .post('/api/users')
-            .send(userToAdd)
-            .expect(400)
+            const response = await api
+                .post('/api/users')
+                .send(userToAdd)
+                .expect(400)
 
+            const errors = response.errors
             const usersAfter = await helper.usersInDB()
 
-            assert.strictEqual(usersAfter.length, usersBefore.length )
+            assert.strictEqual(usersAfter.length, usersBefore.length)
         })
         test('should not add a user with existing username', async () => {
             const usersBefore = await helper.usersInDB()
@@ -64,10 +64,26 @@ describe('when there is one user saved', () => {
                 .send(userToAdd)
                 .expect(400)
 
-            assert.strictEqual(response.body.error, 'username must be unique')
+            assert(response.body.error.includes('username must be unique'))
+            const usersAfter = await helper.usersInDB()
+            assert.strictEqual(usersAfter.length, usersBefore.length)
+        })
+        test('should not add a user with username less than 3 characters', async () => {
+            const usersBefore = await helper.usersInDB()
+            const userToAdd = {
+                ...newTestUser,
+                username: 'ab'
+            }
+
+            const response = await api
+                .post('/api/users')
+                .send(userToAdd)
+                .expect(400)
 
             const usersAfter = await helper.usersInDB()
-            assert.strictEqual(usersAfter.length, usersBefore.length )
+            const error = response.body.error
+            assert(error.includes('Username must be at least 3 characters'))
+            assert.strictEqual(usersAfter.length, usersBefore.length)
         })
         test('should not add user without a password', async () => {
             const usersBefore = await helper.usersInDB()
@@ -75,16 +91,35 @@ describe('when there is one user saved', () => {
             delete userToAdd.password
 
             const response = await api
-            .post('/api/users')
-            .send(userToAdd)
-            .expect(400)
+                .post('/api/users')
+                .send(userToAdd)
+                .expect(400)
+
+            const error = response.body.error
+            const usersAfter = await helper.usersInDB()
+            assert(error.includes('Password is required'))
+            assert.strictEqual(usersAfter.length, usersBefore.length)
+        })
+        test('should not add a user when password less than 3 characters', async () => {
+            const usersBefore = await helper.usersInDB()
+            const userToAdd = {
+                ...newTestUser,
+                password: 'ab'
+            }
+
+            const response = await api
+                .post('/api/users')
+                .send(userToAdd)
+                .expect(400)
 
             const usersAfter = await helper.usersInDB()
-            assert.strictEqual(usersAfter.length, usersBefore.length )
+            const error = response.body.error
+            assert(error.includes('Password must be at least 3 characters'))
+            assert.strictEqual(usersAfter.length, usersBefore.length)
         })
     })
-    after( async () => {
-        await mongoose.connection.close()
-    })
+})
+after( async () => {
+    await mongoose.connection.close()
 
 })
