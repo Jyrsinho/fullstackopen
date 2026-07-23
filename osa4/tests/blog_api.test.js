@@ -53,20 +53,6 @@ describe('when there is initially some blogs and users saved', () => {
         }
     })
     describe('addition of a new blog', async () => {
-        test('should add a blog', async () => {
-            const blogWithUser = await helper.getTestsBlogWithUserReference()
-            await api
-                .post('/api/blogs')
-                .send(blogWithUser)
-                .expect(201)
-                .expect('Content-Type', /application\/json/)
-
-            const blogsAtEnd = await helper.blogsInDB()
-            const authors = blogsAtEnd.map(blog => blog.author)
-
-            assert.strictEqual(blogsAtEnd.length, initialBlogs.length + 1)
-            assert(authors.includes(newTestBlog.author))
-        })
         test('succeeds with user attached to a blog', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const testBlogWithUser = await helper.getTestsBlogWithUserReference()
