@@ -10,7 +10,7 @@ const app = require("../app")
 
 const api = supertest(app)
 describe("Login API", () => {
-    describe("When there are users in database", () => {
+    describe("When there s a user in database", () => {
         beforeEach(async () => {
             await User.deleteMany({})
             const usersBefore = await helper.usersInDB()
@@ -36,6 +36,32 @@ describe("Login API", () => {
             const token = response.body.token
             assert.strictEqual(response.body.username, newTestUser.username)
             assert(token)
+        })
+        test('should fail when given nonexistent username', async () => {
+            const login = {
+                username: 'incorrect username',
+                password: newTestUser.password
+            }
+            const response = await api
+            .post('/api/login')
+            .send(login)
+            .expect(401)
+
+            const error = response.body.error
+            assert.strictEqual(error, 'invalid password or username')
+        })
+        test('should fail when given wrong password', async () => {
+            const login = {
+                username: newTestUser.username,
+                password: 'salasana123'
+            }
+            const response = await api
+            .post('/api/login')
+            .send(login)
+            .expect(401)
+
+            const error = response.body.error
+            assert.strictEqual(error, 'invalid password or username')
         })
     })
         after(async () => {
