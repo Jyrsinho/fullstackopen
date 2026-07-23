@@ -3,22 +3,14 @@ const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
-const Blog = require('../models/blog')
-const User = require('../models/user')
 const {initialBlogs, newTestBlog, invalidId} = require("./fixtures/blogFixtures");
 const helper = require('./test_helper')
-const {initialUsers} = require("./fixtures/userFixtures");
 
 const api = supertest(app)
 
 describe('when there is initially some blogs and users saved', () => {
     beforeEach(async () => {
-        await Blog.deleteMany({})
-        await Blog.insertMany(initialBlogs)
-
-        await User.deleteMany({})
-        await User.insertMany(initialUsers)
-
+        await helper.initializeDB()
     })
     test('blogs are returned as json', async () => {
         await api
@@ -40,6 +32,26 @@ describe('when there is initially some blogs and users saved', () => {
         const firstBlog = blogsAtEnd[0]
         assert.ok(firstBlog.id)
     })
+    test.only('blog should have all fields of user who added the blog', async () => {
+        const response = await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const allBlogs = response.body
+        console.log('AllBlogs: ')
+        console.log(allBlogs)
+        const allUsers = allBlogs.map(blog => blog.user)
+        console.log('AllUsers: ')
+        console.log(allUsers)
+
+        for (const user of allUsers) {
+            assert.ok(user)
+            assert.ok('username' in user)
+            assert.ok('name' in user)
+            assert.ok('id' in user)
+        }
+    })
     describe('addition of a new blog', async () => {
         test('should add a blog', async () => {
             const blogWithUser = await helper.getTestsBlogWithUserReference()
@@ -55,7 +67,7 @@ describe('when there is initially some blogs and users saved', () => {
             assert.strictEqual(blogsAtEnd.length, initialBlogs.length + 1)
             assert(authors.includes(newTestBlog.author))
         })
-        test.only('succeeds with user attached to a blog', async () => {
+        test('succeeds with user attached to a blog', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const testBlogWithUser = await helper.getTestsBlogWithUserReference()
 

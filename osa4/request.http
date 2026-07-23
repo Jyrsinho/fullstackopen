@@ -13,7 +13,8 @@ Content-Type: application/json
   "title": "Jotain paskaa",
   "author": "Joku paska",
   "url": "jotainpaskaa.com",
-  "likes": 0
+  "likes": 0,
+  "user":
 }
 
 

@@ -1,6 +1,28 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const { newTestBlog } = require('./fixtures/blogFixtures')
+const { newTestBlog, initialBlogs } = require('./fixtures/blogFixtures')
+const { initialUsers } = require('./fixtures/userFixtures')
+
+const initializeDB = async () => {
+    await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    const users = await User.insertMany(initialUsers)
+    const user = users[0]
+
+    const blogsWithUsers = initialBlogs.map((blog) => {
+        return {
+            ...blog,
+            user: user.id
+        }
+    })
+    const blogs = await Blog.insertMany(blogsWithUsers)
+    user.blogs = blogs.map((blog) => {
+        return blog.id
+    })
+    await user.save()
+
+}
 
 const blogsInDB = async () => {
     const blogs = await Blog.find({})
@@ -18,7 +40,6 @@ const getAUser = async () => {
 }
 
 const getTestsBlogWithUserReference = async () => {
-    newTestBlog
     const user = await getAUser()
     return {
         ...newTestBlog,
@@ -27,5 +48,5 @@ const getTestsBlogWithUserReference = async () => {
 }
 
 module.exports = {
-    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference
+    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, initializeDB
 }
