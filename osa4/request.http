@@ -2,21 +2,22 @@
 ### GET all blogs
 GET {{baseURL}}/blogs
 
-### GET One blog
-GET {{baseURL}}/blogs/5a422a851b54a676234d17f7
-
-### POST a blog
-POST {{baseURL}}/blogs
+### POST user
+POST {{baseURL}}/users
 Content-Type: application/json
 
 {
-  "title": "Jotain paskaa",
-  "author": "Joku paska",
-  "url": "jotainpaskaa.com",
-  "likes": 0,
-  "user":
+  "username": "jyriBoi",
+  "name": "Jyri Huhtala",
+  "password": "salasana123"
 }
 
 
-### GET unkown endpoint
-GET {{baseURL}}/blogs/simaa
+### POST login
+POST {{baseURL}}/login
+Content-Type: application/json
+
+{
+  "username": "jyriBoi",
+  "password": "salasana123"
+}

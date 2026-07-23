@@ -9,6 +9,7 @@ const requestLogger = (request, response, next) => {
 }
 
 const unknownEndpoint = (request, response) => {
+    console.log('Unknown endpoint :', request.url)
     response.status(404).json({ error: 'unknown endpoint' })
 }
 
