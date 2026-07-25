@@ -5,7 +5,7 @@ const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const blogsRouter = require('./controllers/blogs')
 const loginRouter = require('./controllers/login')
-const { requestLogger } = require('./utils/middleware')
+const { requestLogger, tokenExtractor } = require('./utils/middleware')
 const usersRouter = require('./controllers/users')
 
 const app = express()
@@ -20,6 +20,7 @@ mongoose
         logger.error('error connection to MongoDB:', error.message)
     })
 app.use(express.json())
+app.use(tokenExtractor)
 
 if (process.env.NODE_ENV === 'development' ) {
     app.use(requestLogger)
