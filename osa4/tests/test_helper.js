@@ -1,13 +1,20 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const { newTestBlog, initialBlogs } = require('./fixtures/blogFixtures')
-const { initialUsers } = require('./fixtures/userFixtures')
+const { initialUsers, newTestUser } = require('./fixtures/userFixtures')
+const supertest = require('supertest')
+const app = require('../app')
+const api = supertest(app)
 
 const initializeDB = async () => {
     await Blog.deleteMany({})
     await User.deleteMany({})
 
     const users = await User.insertMany(initialUsers)
+    await api
+        .post('/api/users')
+        .send(newTestUser)
+        .expect(201)
     const user = users[0]
 
     const blogsWithUsers = initialBlogs.map((blog) => {
@@ -52,6 +59,19 @@ const getUsersPassword = (userID) => {
     return user.password
 }
 
+const getLoginToken = async () => {
+    const login = {
+        username: newTestUser.username,
+        password: newTestUser.password
+    }
+    const loginresponse = await api
+        .post('/api/login')
+        .send(login)
+        .expect(200)
+
+    return loginresponse.body.token
+}
+
 module.exports = {
-    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, initializeDB, getUsersPassword,
+    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, initializeDB, getUsersPassword, getLoginToken
 }

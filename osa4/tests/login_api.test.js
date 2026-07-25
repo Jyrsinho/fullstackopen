@@ -10,7 +10,7 @@ const app = require("../app")
 
 const api = supertest(app)
 describe("Login API", () => {
-    describe("When there s a user in database", () => {
+    describe("When there is a user in database", () => {
         beforeEach(async () => {
             await User.deleteMany({})
             const usersBefore = await helper.usersInDB()

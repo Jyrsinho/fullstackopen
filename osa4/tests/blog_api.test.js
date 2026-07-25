@@ -5,6 +5,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const {initialBlogs, newTestBlog, invalidId} = require("./fixtures/blogFixtures");
 const helper = require('./test_helper')
+const {newTestUser} = require("./fixtures/userFixtures");
 
 const api = supertest(app)
 
@@ -39,11 +40,7 @@ describe('when there is initially some blogs and users saved', () => {
             .expect('Content-Type', /application\/json/)
 
         const allBlogs = response.body
-        console.log('AllBlogs: ')
-        console.log(allBlogs)
         const allUsers = allBlogs.map(blog => blog.user)
-        console.log('AllUsers: ')
-        console.log(allUsers)
 
         for (const user of allUsers) {
             assert.ok(user)
@@ -53,27 +50,31 @@ describe('when there is initially some blogs and users saved', () => {
         }
     })
     describe('addition of a new blog', async () => {
-        test('succeeds with user attached to a blog', async () => {
+        test('succeeds with proper authorization token', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const testBlogWithUser = await helper.getTestsBlogWithUserReference()
+            const authToken = await helper.getLoginToken()
 
             const response = await api
                 .post('/api/blogs')
+                .set('Authorization', `Bearer ${authToken}`)
                 .send(testBlogWithUser)
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
 
             const user = response.body.user
             const blogsAtEnd = await helper.blogsInDB()
-            assert(user)
+            assert.ok(user)
             assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
 
         })
         test('if likes not given should give blog zero  likes', async () => {
             const testBlogWithoutLikes = await helper.getTestsBlogWithUserReference()
             delete testBlogWithoutLikes['likes']
+            const authToken = await helper.getLoginToken()
             const response = await api
                 .post('/api/blogs')
+                .set('Authorization', `Bearer ${authToken}`)
                 .send(testBlogWithoutLikes)
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
@@ -84,8 +85,10 @@ describe('when there is initially some blogs and users saved', () => {
         test('blog without an URL is not added ', async () => {
             const testBlogWithoutURL = await helper.getTestsBlogWithUserReference()
             delete testBlogWithoutURL['url']
+            const authToken = await helper.getLoginToken()
             const response = await api
                 .post('/api/blogs')
+                .set('Authorization', `Bearer ${authToken}`)
                 .send(testBlogWithoutURL)
                 .expect(400)
                 .expect('Content-Type', /application\/json/)
@@ -99,8 +102,10 @@ describe('when there is initially some blogs and users saved', () => {
         test('blog without a title is not added', async () => {
             const testBlogWithoutTitle = await helper.getTestsBlogWithUserReference()
             delete testBlogWithoutTitle['title']
+            const authToken = await helper.getLoginToken()
             const response = await api
                 .post('/api/blogs')
+                .set('Authorization', `Bearer ${authToken}`)
                 .send(testBlogWithoutTitle)
                 .expect(400)
                 .expect('Content-Type', /application\/json/)
@@ -123,7 +128,7 @@ describe('when there is initially some blogs and users saved', () => {
             const ids = blogsAtEnd.map(blog => blog.id)
 
             assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
-            assert(!ids.includes(blogToDelete.id))
+            assert.ok(!ids.includes(blogToDelete.id))
         })
         test('fails with 400 if id is invalid', async () => {
             await api.delete(`/api/blogs/${invalidId}`).expect(400)
