@@ -21,3 +21,6 @@ Content-Type: application/json
   "username": "jyriBoi",
   "password": "salasana123"
 }
+
+### Delete blog
+DELETE {{baseURL}}/blogs/6a64dc43d7531379abf682d5

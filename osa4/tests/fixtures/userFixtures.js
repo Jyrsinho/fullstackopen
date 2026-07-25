@@ -16,13 +16,20 @@ const initialUsers = [
     }
 ]
 
-const newTestUser = {
+const blogCreatorUser = {
     name: 'Tim Testuser',
     username: 'testuser',
     password: '123abc321'
 }
 
+const testUserToAdd = {
+    name: 'Jane Doe',
+    username: 'janejane',
+    password: 'salasana1111'
+}
+
 module.exports = {
     initialUsers,
-    newTestUser,
+    blogCreatorUser,
+    testUserToAdd
 }

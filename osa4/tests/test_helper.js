@@ -1,34 +1,33 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
 const { newTestBlog, initialBlogs } = require('./fixtures/blogFixtures')
-const { initialUsers, newTestUser } = require('./fixtures/userFixtures')
+const userFixtures = require('./fixtures/userFixtures')
 const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 
-const initializeDB = async () => {
+const initializeDBWithOneUserAndBlogs = async () => {
     await Blog.deleteMany({})
     await User.deleteMany({})
 
-    const users = await User.insertMany(initialUsers)
-    await api
+    const userResponse = await api
         .post('/api/users')
-        .send(newTestUser)
+        .send(userFixtures.blogCreatorUser)
         .expect(201)
-    const user = users[0]
 
-    const blogsWithUsers = initialBlogs.map((blog) => {
-        return {
-            ...blog,
-            user: user.id
-        }
-    })
-    const blogs = await Blog.insertMany(blogsWithUsers)
-    user.blogs = blogs.map((blog) => {
-        return blog.id
-    })
-    await user.save()
+    const userId = userResponse.body.id
+    const loginToken = await getTestUsersLoginToken()
 
+    for (const blog of initialBlogs) {
+        await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${loginToken}`)
+            .send({
+                ...blog,
+                user: userId
+            })
+            .expect(201)
+    }
 }
 
 const blogsInDB = async () => {
@@ -54,15 +53,11 @@ const getTestsBlogWithUserReference = async () => {
     }
 }
 
-const getUsersPassword = (userID) => {
-    const user = initialUsers.find((user) => user.id === userID)
-    return user.password
-}
 
-const getLoginToken = async () => {
+const getTestUsersLoginToken = async (user) => {
     const login = {
-        username: newTestUser.username,
-        password: newTestUser.password
+        username: user.username,
+        password: user.password
     }
     const loginresponse = await api
         .post('/api/login')
@@ -73,5 +68,5 @@ const getLoginToken = async () => {
 }
 
 module.exports = {
-    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, initializeDB, getUsersPassword, getLoginToken
+    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, initializeDBWithOneUserAndBlogs ,  getTestUsersLoginToken
 }

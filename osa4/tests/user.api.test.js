@@ -1,26 +1,16 @@
 const assert = require('node:assert')
 const { test, after, beforeEach, describe } = require('node:test')
 const mongoose = require("mongoose");
-const User = require("../models/user");
 const helper = require("./test_helper");
-const {initialUsers, newTestUser} = require("./fixtures/userFixtures")
+const userFixtures = require("./fixtures/userFixtures")
 const supertest = require("supertest");
 const app = require("../app")
+const {testUserToAdd} = require("./fixtures/userFixtures");
 
 const api = supertest(app)
-describe('when there is one user saved', () => {
+describe('when there is several users saved', () => {
     beforeEach(async () => {
-        await User.deleteMany({})
-        await User.insertMany(initialUsers)
-    })
-    test('should return all users', async () => {
-        const response = await api
-            .get('/api/users')
-            .expect(200)
-            .expect('Content-Type', /application\/json/)
-        const allUsers = response.body
-
-        assert.strictEqual(allUsers.length, initialUsers.length)
+        await helper.initializeDBWithOneUserAndBlogs()
     })
     describe('adding users', () => {
         test('should add a user when given valid user', async () => {
@@ -28,26 +18,23 @@ describe('when there is one user saved', () => {
 
             await api
                 .post('/api/users')
-                .send(newTestUser)
+                .send(userFixtures.testUserToAdd)
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
 
             const usersAfter = await helper.usersInDB()
             const usernames = usersAfter.map(user => user.username)
-            assert(usernames.includes(newTestUser.username))
+            assert(usernames.includes(testUserToAdd.username))
             assert.strictEqual(usersAfter.length, usersBefore.length + 1)
         })
         test('should not add user without a username', async () => {
             const usersBefore = await helper.usersInDB()
-            const userToAdd = {...newTestUser}
+            const userToAdd = {...userFixtures.testUserToAdd}
             delete userToAdd.username
-
-            const response = await api
+            await api
                 .post('/api/users')
                 .send(userToAdd)
-                .expect(400)
-
-            const errors = response.errors
+                .expect(400);
             const usersAfter = await helper.usersInDB()
 
             assert.strictEqual(usersAfter.length, usersBefore.length)
@@ -56,7 +43,7 @@ describe('when there is one user saved', () => {
             const usersBefore = await helper.usersInDB()
             const existingUser = usersBefore[0]
             const userToAdd = {
-                ...newTestUser,
+                ...userFixtures.testUserToAdd,
                 username: existingUser.username
             }
             const response = await api
@@ -71,7 +58,7 @@ describe('when there is one user saved', () => {
         test('should not add a user with username less than 3 characters', async () => {
             const usersBefore = await helper.usersInDB()
             const userToAdd = {
-                ...newTestUser,
+                ...userFixtures.testUserToAdd,
                 username: 'ab'
             }
 
@@ -87,7 +74,7 @@ describe('when there is one user saved', () => {
         })
         test('should not add user without a password', async () => {
             const usersBefore = await helper.usersInDB()
-            const userToAdd = {...newTestUser}
+            const userToAdd = {...userFixtures.testUserToAdd}
             delete userToAdd.password
 
             const response = await api
@@ -103,7 +90,7 @@ describe('when there is one user saved', () => {
         test('should not add a user when password less than 3 characters', async () => {
             const usersBefore = await helper.usersInDB()
             const userToAdd = {
-                ...newTestUser,
+                ...userFixtures.testUserToAdd,
                 password: 'ab'
             }
 
