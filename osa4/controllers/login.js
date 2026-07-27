@@ -4,20 +4,13 @@ const bcrypt = require('bcrypt')
 const User = require('../models/user')
 
 loginRouter.post('/', async (req, res) => {
-    console.log('Inside LoginRouter/POST')
     const { username, password } = req.body
-    console.log('username ', username)
-    console.log('password', password)
     const user = await User.findOne({ username })
-    console.log('user', user)
     const passWordCorrect = user === null
         ? false
         : await bcrypt.compare(password, user.passwordHash)
-    console.log('PassWordCorerct', passWordCorrect)
 
     if (!user || !passWordCorrect) {
-        console.log('user', user)
-        console.log('passwordcorrect - ', passWordCorrect)
         return res.status(401).send({ error: 'invalid password or username' })
     }
 

@@ -178,7 +178,7 @@ describe('when there is initially one user and one blog saved', () => {
         })
     })
     describe('updating a blog', () => {
-        test('succeeds with 200 if id is valid', async () => {
+        test('succeeds if id is valid', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToUpdate = blogsAtStart[0]
             const updatedBlog = {
@@ -197,7 +197,7 @@ describe('when there is initially one user and one blog saved', () => {
             assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
             assert(authors.includes(updatedBlog.author))
         })
-        test('fails with 400 if id is invalid', async () => {
+        test('fails if id is invalid', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToUpdate = blogsAtStart[0]
             const updatedBlog = {
