@@ -19,7 +19,7 @@ blogsRouter.post('/', async (request, response) => {
     const userID = request.user
     const user = await User.findById(userID)
     if (!user) {
-        return response.status(401).json({ error: 'userid missing or not valid ' })
+        return response.status(401).json({ message: 'userid missing or not valid ' })
     }
 
     const blog = new Blog({
