@@ -81,6 +81,23 @@ describe('when there is initially one user and one blog saved', () => {
             assert.strictEqual(blogsAtEnd.length, blogsAtStart.length + 1)
 
         })
+        test('fails without authorization token', async () => {
+            const blogsAtStart = await helper.blogsInDB()
+            const existingUser = await helper.getAUser()
+            const blogToAdd = {
+                ...initialBlogs[1],
+                user: existingUser.id
+            }
+
+            await api
+                .post('/api/blogs')
+                .send(blogToAdd)
+                .expect(401)
+
+            const blogsAtEnd = await helper.blogsInDB()
+            assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
+
+        })
         test('if likes not given should give blog zero  likes', async () => {
             const existingUser = await helper.getAUser()
             const testBlogWithoutLikes= {
@@ -162,7 +179,7 @@ describe('when there is initially one user and one blog saved', () => {
             assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
             assert.ok(!ids.includes(blogToDelete.id))
         })
-        test.only('not creator cant delete a blog with valid id', async () => {
+        test('not creator cant delete a blog with valid id', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToDelete = blogsAtStart[0]
             await helper.addUserToDB(userFixtures.testUserToAdd)
