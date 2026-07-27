@@ -45,11 +45,9 @@ describe('when there is initially one user and one blog saved', () => {
             .expect('Content-Type', /application\/json/)
 
         const allBlogs = response.body
-        console.log('allblogs:', allBlogs)
         const allUsers = allBlogs.map(blog => blog.user)
 
         for (const user of allUsers) {
-            console.log('user', user)
             assert.ok(user)
             assert.ok('username' in user)
             assert.ok('name' in user)

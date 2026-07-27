@@ -10,7 +10,6 @@ const api = supertest(app)
 
 const addUserToDB = async (user) => {
     user.passwordHash = await bcrypt.hash(user.password, 1)
-    console.log(user)
     return await User.insertOne(user)
 }
 
