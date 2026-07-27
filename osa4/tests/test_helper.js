@@ -1,33 +1,25 @@
 const Blog = require('../models/blog')
 const User = require('../models/user')
-const { newTestBlog, initialBlogs } = require('./fixtures/blogFixtures')
-const userFixtures = require('./fixtures/userFixtures')
+const { newTestBlog } = require('./fixtures/blogFixtures')
 const supertest = require('supertest')
 const app = require('../app')
+const bcrypt = require('bcrypt')
 const api = supertest(app)
 
-const initializeDBWithOneUserAndBlogs = async () => {
-    await Blog.deleteMany({})
-    await User.deleteMany({})
 
-    const userResponse = await api
-        .post('/api/users')
-        .send(userFixtures.blogCreatorUser)
-        .expect(201)
 
-    const userId = userResponse.body.id
-    const loginToken = await getTestUsersLoginToken()
+const addUserToDB = async (user) => {
+    user.passwordHash = await bcrypt.hash(user.password, 1)
+    console.log(user)
+    return await User.insertOne(user)
+}
 
-    for (const blog of initialBlogs) {
-        await api
-            .post('/api/blogs')
-            .set('Authorization', `Bearer ${loginToken}`)
-            .send({
-                ...blog,
-                user: userId
-            })
-            .expect(201)
+const addBlog = async (user, blog) => {
+    const blogToAdd = {
+        ...blog,
+        user: user.id,
     }
+    await Blog.insertOne(blogToAdd)
 }
 
 const blogsInDB = async () => {
@@ -44,6 +36,7 @@ const getAUser = async () => {
     const users = await usersInDB()
     return users[0]
 }
+
 
 const getTestsBlogWithUserReference = async () => {
     const user = await getAUser()
@@ -68,5 +61,5 @@ const getTestUsersLoginToken = async (user) => {
 }
 
 module.exports = {
-    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, initializeDBWithOneUserAndBlogs ,  getTestUsersLoginToken
+    blogsInDB, usersInDB, getAUser, getTestsBlogWithUserReference, addUserToDB, addBlog,  getTestUsersLoginToken
 }

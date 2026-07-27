@@ -1,31 +1,33 @@
+const testPassword =  'testPassword'
+
 const initialUsers = [
     {
         name: 'John Doe',
         username: 'johnnybones',
-        passwordHash: '123salainen'
+        password: testPassword
     },
     {
         name: 'Jane Doe',
         username: 'janejane',
-        passwordHash: 'tosisalainen'
+        password: testPassword
     },
     {
         name: 'Kevin Programmer',
         username: 'bigkev',
-        passwordHash: 'salasana123'
+        password: testPassword
     }
 ]
 
 const blogCreatorUser = {
     name: 'Tim Testuser',
     username: 'testuser',
-    password: '123abc321'
+    password: testPassword
 }
 
 const testUserToAdd = {
     name: 'Jane Doe',
     username: 'janejane',
-    password: 'salasana1111'
+    password: testPassword
 }
 
 module.exports = {

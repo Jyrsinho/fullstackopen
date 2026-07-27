@@ -6,11 +6,17 @@ const app = require('../app')
 const {initialBlogs, invalidId} = require("./fixtures/blogFixtures");
 const userFixtures = require('./fixtures/userFixtures');
 const helper = require('./test_helper')
+const blogFixtures = require("./fixtures/blogFixtures");
 const api = supertest(app)
+const User = require('../models/user')
+const Blog = require('../models/blog')
 
-describe('when there is initially some blogs and one user saved', () => {
+describe('when there is initially one user and one blog saved', () => {
     beforeEach(async () => {
-        await helper.initializeDBWithOneUserAndBlogs()
+        await User.deleteMany({})
+        await Blog.deleteMany({})
+        const user = await helper.addUserToDB(userFixtures.blogCreatorUser)
+        await helper.addBlog(user, blogFixtures.initialBlogs[0])
     })
     test('blogs are returned as json', async () => {
         await api
@@ -25,7 +31,7 @@ describe('when there is initially some blogs and one user saved', () => {
             .expect('Content-Type', /application\/json/)
 
         const allBlogs = response.body
-        assert.strictEqual(allBlogs.length, initialBlogs.length)
+        assert.strictEqual(allBlogs.length, 1)
     })
     test('blog should have key named id', async () => {
         const blogsAtEnd = await helper.blogsInDB()
@@ -39,9 +45,11 @@ describe('when there is initially some blogs and one user saved', () => {
             .expect('Content-Type', /application\/json/)
 
         const allBlogs = response.body
+        console.log('allblogs:', allBlogs)
         const allUsers = allBlogs.map(blog => blog.user)
 
         for (const user of allUsers) {
+            console.log('user', user)
             assert.ok(user)
             assert.ok('username' in user)
             assert.ok('name' in user)
@@ -51,13 +59,19 @@ describe('when there is initially some blogs and one user saved', () => {
     describe('addition of a new blog', () => {
         test('succeeds with proper authorization token', async () => {
             const blogsAtStart = await helper.blogsInDB()
-            const testBlogWithUser = await helper.getTestsBlogWithUserReference()
-            const authToken = await helper.getTestUsersLoginToken()
+            const existingUser = await helper.getAUser()
+
+            const blogToAdd = {
+                ...initialBlogs[1],
+                user: existingUser.id
+            }
+
+            const authToken = await helper.getTestUsersLoginToken(userFixtures.blogCreatorUser)
 
             const response = await api
                 .post('/api/blogs')
                 .set('Authorization', `Bearer ${authToken}`)
-                .send(testBlogWithUser)
+                .send(blogToAdd)
                 .expect(201)
                 .expect('Content-Type', /application\/json/)
 
@@ -68,9 +82,13 @@ describe('when there is initially some blogs and one user saved', () => {
 
         })
         test('if likes not given should give blog zero  likes', async () => {
-            const testBlogWithoutLikes = await helper.getTestsBlogWithUserReference()
+            const existingUser = await helper.getAUser()
+            const testBlogWithoutLikes= {
+                ...initialBlogs[1],
+                user: existingUser.id
+            }
             delete testBlogWithoutLikes['likes']
-            const authToken = await helper.getTestUsersLoginToken()
+            const authToken = await helper.getTestUsersLoginToken(userFixtures.blogCreatorUser)
             const response = await api
                 .post('/api/blogs')
                 .set('Authorization', `Bearer ${authToken}`)
@@ -82,9 +100,14 @@ describe('when there is initially some blogs and one user saved', () => {
             assert.strictEqual(savedBlog.likes, 0)
         })
         test('blog without an URL is not added ', async () => {
-            const testBlogWithoutURL = await helper.getTestsBlogWithUserReference()
+            const blogsAtStart = await helper.blogsInDB()
+            const existingUser = await helper.getAUser()
+            const testBlogWithoutURL = {
+                ...initialBlogs[1],
+                user: existingUser.id
+            }
             delete testBlogWithoutURL['url']
-            const authToken = await helper.getTestUsersLoginToken()
+            const authToken = await helper.getTestUsersLoginToken(userFixtures.blogCreatorUser)
             const response = await api
                 .post('/api/blogs')
                 .set('Authorization', `Bearer ${authToken}`)
@@ -95,13 +118,17 @@ describe('when there is initially some blogs and one user saved', () => {
             const error = response.body.error
             const blogsAtEnd = await helper.blogsInDB()
             assert(error.includes('URL is required'))
-            assert.strictEqual(blogsAtEnd.length, initialBlogs.length)
-
+            assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
         })
         test('blog without a title is not added', async () => {
-            const testBlogWithoutTitle = await helper.getTestsBlogWithUserReference()
+            const blogsAtStart = await helper.blogsInDB()
+            const existingUser = await helper.getAUser()
+            const testBlogWithoutTitle = {
+                ...initialBlogs[1],
+                user: existingUser.id
+            }
             delete testBlogWithoutTitle['title']
-            const authToken = await helper.getTestUsersLoginToken()
+            const authToken = await helper.getTestUsersLoginToken(userFixtures.blogCreatorUser)
             const response = await api
                 .post('/api/blogs')
                 .set('Authorization', `Bearer ${authToken}`)
@@ -112,15 +139,15 @@ describe('when there is initially some blogs and one user saved', () => {
 
             const blogsAtEnd = await helper.blogsInDB()
             assert(error.includes('Title is required'))
-            assert.strictEqual(blogsAtEnd.length, initialBlogs.length)
+            assert.strictEqual(blogsAtEnd.length, blogsAtStart.length)
 
         })
     })
     describe('deletion of a blog', () => {
-        test.only('creator can delete a blog with valid id', async () => {
+        test('creator can delete a blog with valid id', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToDelete = blogsAtStart[0]
-            const token = await helper.getTestUsersLoginToken()
+            const token = await helper.getTestUsersLoginToken(userFixtures.blogCreatorUser)
             const response = await api
                 .delete(`/api/blogs/${blogToDelete.id}`)
                 .set('Authorization', `Bearer ${token}`)
@@ -138,9 +165,16 @@ describe('when there is initially some blogs and one user saved', () => {
         test.only('not creator cant delete a blog with valid id', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToDelete = blogsAtStart[0]
-        })
-        test('cant delete a blog with invalid id', async () => {
-            await api.delete(`/api/blogs/${invalidId}`).expect(400)
+            await helper.addUserToDB(userFixtures.testUserToAdd)
+            const token = await helper.getTestUsersLoginToken(userFixtures.testUserToAdd)
+
+            await api
+                .delete(`/api/blogs/${blogToDelete.id}`)
+                .set('Authorization', `Bearer ${token}`)
+                .send()
+                .expect(401)
+            const blogsAtEnd = await helper.blogsInDB()
+            assert.strictEqual(blogsAtEnd.length, blogsAtStart.length )
         })
     })
     describe('updating a blog', () => {
@@ -179,6 +213,7 @@ describe('when there is initially some blogs and one user saved', () => {
     })
     })
 after(async () => {
+    console.log('closing connection')
     await mongoose.connection.close()
-
+    console.log('closed connection')
 })
