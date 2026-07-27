@@ -6,11 +6,17 @@ const userFixtures = require("./fixtures/userFixtures")
 const supertest = require("supertest");
 const app = require("../app")
 const {testUserToAdd} = require("./fixtures/userFixtures");
+const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const api = supertest(app)
-describe('when there is several users saved', () => {
+describe('when there is one user saved', () => {
     beforeEach(async () => {
-        await helper.initializeDBWithOneUserAndBlogs()
+        await User.deleteMany({})
+        await Blog.deleteMany({})
+        const userInDB = userFixtures.blogCreatorUser
+        await helper.addUserToDB(userInDB)
+
     })
     describe('adding users', () => {
         test('should add a user when given valid user', async () => {

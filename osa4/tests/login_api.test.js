@@ -5,18 +5,26 @@ const helper = require("./test_helper");
 const userFixtures = require("./fixtures/userFixtures")
 const supertest = require("supertest");
 const app = require("../app")
+const User = require("../models/user");
+const Blog = require("../models/blog");
+const {usersInDB} = require("./test_helper");
+const {blogCreatorUser} = require("./fixtures/userFixtures");
+
 
 
 const api = supertest(app)
 describe("Login API", () => {
     describe("When there is a user in database", () => {
         beforeEach(async () => {
-            await helper.initializeDBWithOneUserAndBlogs()
+            await User.deleteMany({})
+            await Blog.deleteMany({})
+            await helper.addUserToDB(userFixtures.blogCreatorUser)
         })
         test("Should succeed when given correct username and password", async () => {
+            const userInDB = await helper.getAUser()
             const login = {
-                username: userFixtures.blogCreatorUser.username,
-                password: userFixtures.blogCreatorUser.password
+                username: userInDB.username,
+                password: blogCreatorUser.password
             }
             const response = await api
                 .post('/api/login')
@@ -27,7 +35,7 @@ describe("Login API", () => {
             assert.strictEqual(response.body.username, userFixtures.blogCreatorUser.username)
             assert(token)
         })
-        test('should fail when given nonexistent username', async () => {
+        test.only('should fail when given nonexistent username', async () => {
             const login = {
                 username: 'incorrect username',
                 password: userFixtures.blogCreatorUser.password
