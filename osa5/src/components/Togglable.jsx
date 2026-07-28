@@ -13,7 +13,7 @@ export function Togglable(props) {
     return (
         <div>
             <div style={hideWhenVisible}>
-                <button onClick={toggleVisible}>create a blog</button>
+                <button onClick={toggleVisible}>{props.buttonlabel}</button>
             </div>
             <div style={showWhenVisible}>
                 {props.children}

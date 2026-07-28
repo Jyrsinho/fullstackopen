@@ -85,11 +85,13 @@ const App = () => {
 
     return (
     <div>
-        {!user && <LoginForm onSubmit={handleLogin}/>}
+        {!user && <Togglable buttonlabel={'login'}>
+                        <LoginForm onSubmit={handleLogin}/>
+                    </Togglable>}
         {user && <h2>Blogs</h2>}
         <StatusMessage message={message} setMessage={setMessage} />
         {user && <User user={user} onLogout={handleLogout} />}
-        { user && <Togglable>
+        {user && <Togglable buttonlabel={'create new blog'}>
             <BlogForm handleSubmit={handleSubmitNewBlog}/>
         </Togglable>}
         {user && <Blogs blogs={blogs} />}
