@@ -7,9 +7,12 @@ const setToken = (newToken) => {
     token = 'Bearer ' + newToken;
 }
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+const getAll =async () => {
+    const response = await axios.get(baseUrl)
+    console.log('services, getAll:')
+    console.log(response)
+    console.log(response.data)
+    return response.data
 }
 
 const put = async (newBlog, id) => {

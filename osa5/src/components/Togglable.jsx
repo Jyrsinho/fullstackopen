@@ -1,9 +1,7 @@
 import {useState, useImperativeHandle} from "react";
 
 export function Togglable(props) {
-    console.log('Togglable', props);
-    console.log('Togglable ref', props.ref)
-    
+
     const [visible, setVisible] = useState(false);
 
     const hideWhenVisible = {display : visible ? 'none' : ''};

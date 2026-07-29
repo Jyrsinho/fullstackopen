@@ -4,8 +4,9 @@ const User = require('../models/user')
 
 
 blogsRouter.get('/', async (request, response) => {
-    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
-    response.json(blogs)
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+    console.log('blogsrouter', blogs)
+    response.status(200).json(blogs)
 })
 
 blogsRouter.get('/:id', async (request, response) => {
@@ -49,7 +50,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
     const body = request.body
 
-    const blog = await Blog.findById(request.params.id).populate('user', { username: 1, name: 1, id: 1 })
+    const blog = await Blog.findById(request.params.id).populate('user', { username: 1, name: 1 })
     if (!blog) {
         return response.status(404).end()
     }

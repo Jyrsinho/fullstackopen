@@ -13,12 +13,17 @@ const App = () => {
     const [user, setUser] = useState(null)
     const [message, setMessage] = useState(null)
     const blogFormRef = useRef();
+    
+    console.log('APP')
+    console.log(blogs)
 
 
     useEffect(() => {
+        console.log('fetching blogs through useEffect')
         const fetchBlogs = async () => {
            try {
                const blogs = await blogService.getAll()
+               console.log('fetched blogs -', blogs)
                setBlogs(blogs)
            } catch (error) {
                console.log(error)
@@ -115,7 +120,7 @@ const App = () => {
         {user && <Togglable ref={blogFormRef} buttonlabel={'create new blog'}>
             <BlogForm createBlog={createBlog}/>
         </Togglable>}
-        {user && <Blogs blogs={blogs} addALike={addALike} />}
+        {user && <Blogs user={user} blogs={blogs} addALike={addALike} />}
     </div>
   )
 }
