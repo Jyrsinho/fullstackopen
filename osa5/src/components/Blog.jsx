@@ -21,6 +21,9 @@ const Blog = ({ blog, addALike }) => {
                             <button onClick={() =>addALike(blog)}>like</button>
                         </li>
                         <li>{blog.user.name}</li>
+                        <li>
+                            <button onClick={()=> removeBlog(blog)}>remove</button>
+                        </li>
                     </>
                 }
             </ul>
