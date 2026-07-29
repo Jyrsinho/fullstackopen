@@ -1,14 +1,14 @@
 import {FormInput} from "./FormInput.jsx";
 import {useState} from "react";
 
-export function BlogForm({handleSubmit}) {
+export function BlogForm({createBlog}) {
     const [title, setTitle] = useState("");
     const [author, setAuthor] = useState("");
     const [url, setUrl] = useState("");
 
     const onSubmit = (e) => {
         e.preventDefault();
-        handleSubmit({
+        createBlog({
             title,
             author,
             url

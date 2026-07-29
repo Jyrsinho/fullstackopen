@@ -64,7 +64,7 @@ const App = () => {
         localStorage.removeItem('loggedUser')
     }
 
-    const handleSubmitNewBlog = async (createdBlog) => {
+    const createBlog = async (createdBlog) => {
         try {
             const newBlog = await blogService.create(createdBlog)
             const newBlogs = [...blogs, newBlog]
@@ -92,7 +92,7 @@ const App = () => {
         <StatusMessage message={message} setMessage={setMessage} />
         {user && <User user={user} onLogout={handleLogout} />}
         {user && <Togglable buttonlabel={'create new blog'}>
-            <BlogForm handleSubmit={handleSubmitNewBlog}/>
+            <BlogForm createBlog={createBlog}/>
         </Togglable>}
         {user && <Blogs blogs={blogs} />}
     </div>
