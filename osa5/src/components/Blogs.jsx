@@ -1,7 +1,8 @@
 import Blog from "./Blog.jsx";
 
 const Blogs = ({blogs, addALike}) => {
-    console.log(blogs)
+    //Lajitellaan suuruusjärjestykseen
+    blogs.sort((a,b) => b.likes - a.likes);
 
     return(
         <div>
