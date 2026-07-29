@@ -82,6 +82,25 @@ const App = () => {
         }
     }
 
+    const addALike = async (likedBlog) => {
+        console.log('lets add a like to', likedBlog)
+        const blogToSave = {
+            ...likedBlog,
+            likes: likedBlog.likes + 1
+        }
+        try {
+            const editedBlog = await blogService.put(blogToSave, likedBlog.id)
+            const newBlogs = blogs.map( (blog) => {
+                return blog.id === likedBlog.id ? editedBlog : blog
+            } )
+            setBlogs(newBlogs)
+        } catch (error) {
+            setMessage({
+                status: 'error',
+                message: error.message,
+            })
+        }
+    }
 
     return (
     <div>
@@ -94,7 +113,7 @@ const App = () => {
         {user && <Togglable buttonlabel={'create new blog'}>
             <BlogForm createBlog={createBlog}/>
         </Togglable>}
-        {user && <Blogs blogs={blogs} />}
+        {user && <Blogs blogs={blogs} addALike={addALike} />}
     </div>
   )
 }

@@ -1,12 +1,12 @@
 import Blog from "./Blog.jsx";
 
-const Blogs = ({blogs}) => {
+const Blogs = ({blogs, addALike}) => {
     console.log(blogs)
 
     return(
         <div>
             <h3>blogs:</h3>
-            {blogs.map(blog => <Blog key={blog.id} blog={blog} />)}
+            {blogs.map(blog => <Blog addALike={addALike} key={blog.id} blog={blog} />)}
         </div>
     )
 }

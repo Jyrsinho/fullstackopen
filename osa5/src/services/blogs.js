@@ -12,6 +12,11 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
+const put = async (newBlog, id) => {
+    const response = await axios.put(`${baseUrl}/${id}`, newBlog)
+    return response.data
+}
+
 const create = async (newBlog) => {
     console.log('In blogservices creating new blog')
     const config = {
@@ -26,5 +31,6 @@ const create = async (newBlog) => {
 export default {
     getAll,
     create,
-    setToken
+    setToken,
+    put
 }
