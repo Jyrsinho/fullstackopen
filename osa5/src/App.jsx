@@ -83,13 +83,13 @@ const App = () => {
     }
 
     const addALike = async (likedBlog) => {
-        console.log('lets add a like to', likedBlog)
         const blogToSave = {
             ...likedBlog,
             likes: likedBlog.likes + 1
         }
         try {
             const editedBlog = await blogService.put(blogToSave, likedBlog.id)
+            console.log('Blog returned from server', editedBlog)
             const newBlogs = blogs.map( (blog) => {
                 return blog.id === likedBlog.id ? editedBlog : blog
             } )
