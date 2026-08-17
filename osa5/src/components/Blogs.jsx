@@ -1,19 +1,13 @@
 import Blog from "./Blog.jsx";
 
-const Blogs = ({user, blogs, addALike}) => {
+const Blogs = ({user, blogs, addALike, removeBlog}) => {
     //Lajitellaan suuruusjärjestykseen
     blogs.sort((a,b) => b.likes - a.likes);
 
     return(
         <div>
             <h3>blogs:</h3>
-            {blogs.map( (blog) => {
-                return <Blog addALike={addALike}
-                             key={blog.id}
-                             blog={blog}
-                             removable={blog.user = user.id}
-                />
-            })}
+            {blogs.map(blog => <Blog user={user} addALike={addALike} key={blog.id} blog={blog} removeBlog={removeBlog} />)}
         </div>
     )
 }

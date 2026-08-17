@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useState} from 'react'
 import blogService from './services/blogs.js'
 import {LoginForm} from "./components/LoginForm.jsx";
 import loginService from './services/login.js'
@@ -12,18 +12,14 @@ const App = () => {
     const [blogs, setBlogs] = useState([])
     const [user, setUser] = useState(null)
     const [message, setMessage] = useState(null)
-    const blogFormRef = useRef();
     
-    console.log('APP')
-    console.log(blogs)
+    console.log('Rendering app again')
 
 
     useEffect(() => {
-        console.log('fetching blogs through useEffect')
         const fetchBlogs = async () => {
            try {
                const blogs = await blogService.getAll()
-               console.log('fetched blogs -', blogs)
                setBlogs(blogs)
            } catch (error) {
                console.log(error)
@@ -69,9 +65,6 @@ const App = () => {
     }
 
     const createBlog = async (createdBlog) => {
-        console.log('creating a blog...')
-        console.log('blogformref: ', blogFormRef.current)
-        blogFormRef.current.toggleVisibility()
         try {
             const newBlog = await blogService.create(createdBlog)
             const newBlogs = [...blogs, newBlog]
@@ -108,19 +101,36 @@ const App = () => {
             })
         }
     }
+    
+    const removeBlog = async (blogToRemove) => {
+        console.log('lets remove', blogToRemove)
+        try {
+            await blogService.deleteBlog(blogToRemove.id)
+            setMessage({
+                status: 'success',
+                message:  `Removed blog ${blogToRemove.title} by ${blogToRemove.author}`,
+            })
+            setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
+        }catch(error){
+            setMessage({
+                status: 'error',
+                message: error.message,
+            })
+        }
+    }
 
     return (
     <div>
-        {!user && <Togglable buttonlabel={'login'} >
+        {!user && <Togglable buttonlabel={'login'}>
                         <LoginForm onSubmit={handleLogin}/>
                     </Togglable>}
         {user && <h2>Blogs</h2>}
         <StatusMessage message={message} setMessage={setMessage} />
         {user && <User user={user} onLogout={handleLogout} />}
-        {user && <Togglable ref={blogFormRef} buttonlabel={'create new blog'}>
+        {user && <Togglable buttonlabel={'create new blog'}>
             <BlogForm createBlog={createBlog}/>
         </Togglable>}
-        {user && <Blogs user={user} blogs={blogs} addALike={addALike} />}
+        {user && <Blogs user={user} blogs={blogs} addALike={addALike} removeBlog={removeBlog} />}
     </div>
   )
 }

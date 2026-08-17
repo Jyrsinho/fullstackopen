@@ -1,11 +1,9 @@
 import {useState} from "react";
 
-const Blog = ({ blog, addALike, removable }) => {
+const Blog = ({user, blog, addALike, removeBlog }) => {
     const [extended, setExtended, ] = useState(false);
     const buttonText = extended ? "Hide" : "Show";
-    console.log('BLOG')
-    console.log('blog:', blog)
-    console.log('removable- ', removable)
+    const addedByUser = user.id === blog.user.id
 
     const toggleExtended = () => {
         setExtended(!extended);
@@ -24,11 +22,7 @@ const Blog = ({ blog, addALike, removable }) => {
                             <button onClick={() =>addALike(blog)}>like</button>
                         </li>
                         <li>{blog.user.name}</li>
-                        {removable &&
-                            <li>
-                               <button onClick={()=> removeBlog(blog)}>remove</button>
-                            </li>
-                        }
+                        {addedByUser && <button onClick={() => removeBlog(blog)}>Remove</button> }
                     </>
                 }
             </ul>
