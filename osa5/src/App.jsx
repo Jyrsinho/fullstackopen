@@ -14,6 +14,7 @@ const App = () => {
     const [message, setMessage] = useState(null)
     
     console.log('Rendering app again')
+    console.log('user', user);
 
 
     useEffect(() => {
@@ -68,6 +69,7 @@ const App = () => {
     const createBlog = async (createdBlog) => {
         try {
             const newBlog = await blogService.create(createdBlog)
+            // TODO täällä newBlogiin täytyy liittää user joka on kirjautunut
             const newBlogs = [...blogs, newBlog]
             setBlogs(newBlogs)
             setMessage({
