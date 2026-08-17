@@ -64,6 +64,7 @@ const App = () => {
         localStorage.removeItem('loggedUser')
     }
 
+    // TODO: Täällä pitää saada kirjautuneen käyttäjän id lisättyä blogiin frontissa
     const createBlog = async (createdBlog) => {
         try {
             const newBlog = await blogService.create(createdBlog)
@@ -89,7 +90,6 @@ const App = () => {
         }
         try {
             const editedBlog = await blogService.put(blogToSave, likedBlog.id)
-            console.log('Blog returned from server', editedBlog)
             const newBlogs = blogs.map( (blog) => {
                 return blog.id === likedBlog.id ? editedBlog : blog
             } )

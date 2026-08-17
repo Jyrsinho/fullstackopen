@@ -1,2 +1,4 @@
 # Mihin jäin
-Osa 2.D
+Osa 5
+Tehtävä 5.11
+Blogin lisääminen ei näytä lisääjää
