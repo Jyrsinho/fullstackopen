@@ -3,7 +3,10 @@ import {useState} from "react";
 const Blog = ({user, blog, addALike, removeBlog }) => {
     const [extended, setExtended, ] = useState(false);
     const buttonText = extended ? "Hide" : "Show";
-    const addedByUser = user.id === blog.user.id
+    const addedByUser = user.username === blog.user.username
+
+    console.log('Blog - blog', blog)
+    console.log('Blog - user', user)
 
     const toggleExtended = () => {
         setExtended(!extended);

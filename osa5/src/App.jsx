@@ -65,11 +65,13 @@ const App = () => {
         localStorage.removeItem('loggedUser')
     }
 
-    // TODO: Täällä pitää saada kirjautuneen käyttäjän id lisättyä blogiin frontissa
     const createBlog = async (createdBlog) => {
         try {
-            const newBlog = await blogService.create(createdBlog)
-            // TODO täällä newBlogiin täytyy liittää user joka on kirjautunut
+            const response = await blogService.create(createdBlog)
+            const newBlog = {
+                ...response,
+                user
+            }
             const newBlogs = [...blogs, newBlog]
             setBlogs(newBlogs)
             setMessage({
@@ -105,7 +107,8 @@ const App = () => {
     }
     
     const removeBlog = async (blogToRemove) => {
-        console.log('lets remove', blogToRemove)
+        const confirm = window.confirm(`Are you sure you want to remove ${blogToRemove.title}?`)
+        if (!confirm) return
         try {
             await blogService.deleteBlog(blogToRemove.id)
             setMessage({
