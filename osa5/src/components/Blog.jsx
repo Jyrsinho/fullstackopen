@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-const Blog = ({ user, blog, addALike, removeBlog }) => {
+const Blog = ({ loggedUser, blog, addALike, removeBlog }) => {
     const [extended, setExtended, ] = useState(false)
     const buttonText = extended ? 'Hide' : 'Show'
-    const addedByUser = user.username === blog.user.username
+    const addedByUser = loggedUser.username === blog.user.username
 
     const toggleExtended = () => {
         setExtended(!extended)

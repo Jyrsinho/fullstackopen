@@ -10,7 +10,7 @@ import { Togglable } from './components/Togglable.jsx'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
-    const [user, setUser] = useState(null)
+    const [loggedUser, setLoggedUser] = useState(null)
     const [message, setMessage] = useState(null)
 
     useEffect(() => {
@@ -34,7 +34,7 @@ const App = () => {
         const user = JSON.parse(localStorage.getItem('loggedUser'))
         if (user) {
             console.log('found user from localStorage')
-            setUser(user)
+            setLoggedUser(user)
             blogService.setToken(user.token)
         } else {
             console.log('user not found from localStorage')
@@ -47,7 +47,7 @@ const App = () => {
             const user = await loginService.login(credentials)
             window.localStorage.setItem('loggedUser', JSON.stringify(user))
             blogService.setToken(user.token)
-            setUser(user)
+            setLoggedUser(user)
         }catch(error){
             console.log(error)
             setMessage({
@@ -58,7 +58,7 @@ const App = () => {
     }
 
     const handleLogout = async () => {
-        setUser(null)
+        setLoggedUser(null)
         localStorage.removeItem('loggedUser')
     }
 
@@ -67,7 +67,7 @@ const App = () => {
             const response = await blogService.create(createdBlog)
             const newBlog = {
                 ...response,
-                user
+                user: loggedUser
             }
             const newBlogs = [...blogs, newBlog]
             setBlogs(newBlogs)
@@ -128,16 +128,16 @@ const App = () => {
 
     return (
         <div>
-            {!user && <Togglable buttonlabel={'login'}>
+            {!loggedUser && <Togglable buttonlabel={'login'}>
                 <LoginForm onSubmit={handleLogin}/>
             </Togglable>}
-            {user && <h2>Blogs</h2>}
+            {loggedUser && <h2>Blogs</h2>}
             {message && <StatusMessage message={message} resetMessage={resetMessage} /> }
-            {user && <User user={user} onLogout={handleLogout} />}
-            {user && <Togglable buttonlabel={'create new blog'}>
+            {loggedUser && <User loggedUser={loggedUser} onLogout={handleLogout} />}
+            {loggedUser && <Togglable buttonlabel={'create new blog'}>
                 <BlogForm createBlog={createBlog}/>
             </Togglable>}
-            {user && <Blogs user={user} blogs={blogs} addALike={addALike} removeBlog={removeBlog} />}
+            {loggedUser && <Blogs loggedUser={loggedUser} blogs={blogs} addALike={addALike} removeBlog={removeBlog} />}
         </div>
     )
 }
