@@ -1,16 +1,15 @@
 import { useEffect } from 'react'
 
-export function StatusMessage({ message, setMessage }) {
+export function StatusMessage({ message, resetMessage }) {
 
     useEffect(() => {
         setTimeout(() => {
-            setMessage(null)
+            resetMessage()
         }, 5000)
-    }, [message])
+    }, [message, resetMessage])
 
     const classname = message.status === 'error' ? 'error-message' : 'success-message'
 
-    if (!message) return null
     return (
         <div className={'status-message-container'}>
             <p className={classname}>{message.message}</p>

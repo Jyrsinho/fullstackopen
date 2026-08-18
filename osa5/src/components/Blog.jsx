@@ -5,9 +5,6 @@ const Blog = ({ user, blog, addALike, removeBlog }) => {
     const buttonText = extended ? 'Hide' : 'Show'
     const addedByUser = user.username === blog.user.username
 
-    console.log('Blog - blog', blog)
-    console.log('Blog - user', user)
-
     const toggleExtended = () => {
         setExtended(!extended)
     }

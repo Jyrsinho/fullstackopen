@@ -121,13 +121,18 @@ const App = () => {
         }
     }
 
+
+    const resetMessage = () => {
+        setMessage(null)
+    }
+
     return (
         <div>
             {!user && <Togglable buttonlabel={'login'}>
                 <LoginForm onSubmit={handleLogin}/>
             </Togglable>}
             {user && <h2>Blogs</h2>}
-            <StatusMessage message={message} setMessage={setMessage} />
+            {message && <StatusMessage message={message} resetMessage={resetMessage} /> }
             {user && <User user={user} onLogout={handleLogout} />}
             {user && <Togglable buttonlabel={'create new blog'}>
                 <BlogForm createBlog={createBlog}/>
