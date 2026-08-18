@@ -1,8 +1,8 @@
-import Blog from "./Blog.jsx";
+import Blog from './Blog.jsx'
 
-const Blogs = ({user, blogs, addALike, removeBlog}) => {
+const Blogs = ({ user, blogs, addALike, removeBlog }) => {
     //Lajitellaan suuruusjärjestykseen
-    blogs.sort((a,b) => b.likes - a.likes);
+    blogs.sort((a,b) => b.likes - a.likes)
 
     return(
         <div>
@@ -11,4 +11,4 @@ const Blogs = ({user, blogs, addALike, removeBlog}) => {
         </div>
     )
 }
-export default Blogs;
+export default Blogs

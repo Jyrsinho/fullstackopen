@@ -1,17 +1,16 @@
-import {useEffect} from "react";
+import { useEffect } from 'react'
 
 export function StatusMessage({ message, setMessage }) {
-
-    if (!message) return null
 
     useEffect(() => {
         setTimeout(() => {
             setMessage(null)
         }, 5000)
-    }, [message]);
+    }, [message])
 
-    const classname = message.status === 'error' ? 'error-message' : 'success-message';
+    const classname = message.status === 'error' ? 'error-message' : 'success-message'
 
+    if (!message) return null
     return (
         <div className={'status-message-container'}>
             <p className={classname}>{message.message}</p>

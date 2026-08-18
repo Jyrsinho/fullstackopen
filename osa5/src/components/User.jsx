@@ -1,4 +1,4 @@
-export function User({user, onLogout}) {
+export function User({ user, onLogout }) {
     return (
         <div>
             <p>{user.name} logged in</p>

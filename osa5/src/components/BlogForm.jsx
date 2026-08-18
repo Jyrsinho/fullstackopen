@@ -1,21 +1,21 @@
-import {FormInput} from "./FormInput.jsx";
-import {useState} from "react";
+import { FormInput } from './FormInput.jsx'
+import { useState } from 'react'
 
-export function BlogForm({createBlog}) {
-    const [title, setTitle] = useState("");
-    const [author, setAuthor] = useState("");
-    const [url, setUrl] = useState("");
+export function BlogForm({ createBlog }) {
+    const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
 
     const onSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         createBlog({
             title,
             author,
             url
-        });
-        setTitle("");
-        setAuthor("");
-        setUrl("");
+        })
+        setTitle('')
+        setAuthor('')
+        setUrl('')
     }
 
     return (
