@@ -13,12 +13,7 @@ describe('Blog', () => {
             }
         }
 
-        const testUser = {
-            name: 'Test User',
-            username: 'testuser',
-        }
-
-        render(<Blog blog={testBlog} loggedUser={testUser} />)
+        render(<Blog blog={testBlog} />)
 
         const element = screen.getByText('Test Title', {exact: false})
         expect(element).toBeDefined()

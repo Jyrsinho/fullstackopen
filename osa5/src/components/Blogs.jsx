@@ -7,7 +7,13 @@ const Blogs = ({ loggedUser, blogs, addALike, removeBlog }) => {
     return(
         <div>
             <h3>blogs:</h3>
-            {blogs.map(blog => <Blog loggedUser={loggedUser} addALike={addALike} key={blog.id} blog={blog} removeBlog={removeBlog} />)}
+            {blogs.map(blog => {
+                return <Blog addedByUser={loggedUser.username === blog.user.username}
+                             addALike={addALike}
+                             key={blog.id}
+                             blog={blog}
+                             removeBlog={removeBlog} />  }
+            )}
         </div>
     )
 }
