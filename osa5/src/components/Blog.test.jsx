@@ -34,10 +34,24 @@ describe('Blog', () => {
         expect(blogUser).toBeDefined()
         screen.debug()
     })
+    test('clicking like button twice calls its event handler twice ', async () => {
+        const mockHandler = vi.fn()
+        render(<Blog blog={testBlog} addALike={mockHandler} />)
+
+        const user = userEvent.setup()
+        const showButton = screen.getByText('Show')
+        await user.click(showButton)
+
+        const likeButton = screen.getByText('like')
+        await user.click(likeButton)
+        await user.click(likeButton)
+
+        expect(mockHandler.mock.calls).toHaveLength(2)
+
+    })
     /*
-    Tee testi, joka varmistaa että myös
-     url, likejen määrä ja käyttäjä näytetään,
-     kun blogin kaikki tiedot näyttävää
-     nappia on painettu.
+      Tee testi, joka varmistaa, että jos komponentin like-nappia
+      painetaan kahdesti, komponentin propsina saamaa
+      tapahtumankäsittelijäfunktiota kutsutaan kaksi kertaa.
      */
 })
