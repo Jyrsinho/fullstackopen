@@ -47,11 +47,5 @@ describe('Blog', () => {
         await user.click(likeButton)
 
         expect(mockHandler.mock.calls).toHaveLength(2)
-
     })
-    /*
-      Tee testi, joka varmistaa, että jos komponentin like-nappia
-      painetaan kahdesti, komponentin propsina saamaa
-      tapahtumankäsittelijäfunktiota kutsutaan kaksi kertaa.
-     */
 })
