@@ -21,7 +21,8 @@ const put = async (newBlog, id) => {
 }
 
 const create = async (newBlog) => {
-    console.log('In blogservices creating new blog')
+    console.log('In blogservices creating new blog', newBlog)
+    console.log('token', token)
     const config = {
         headers: {
             Authorization: token

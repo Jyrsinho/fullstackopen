@@ -1,5 +1,11 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const {loginWith} = require('./helper')
+const {loginWith, createBlog} = require('./helper')
+
+const testBlog = {
+    title: 'Test Blog Title',
+    author: 'Test Blog Author',
+    url: 'testblogurl.com'
+}
 
 describe('Blog app', () => {
     beforeEach(async ({ page, request }) => {
@@ -28,6 +34,21 @@ describe('Blog app', () => {
             await loginWith(page, 'mluukkai', 'wrong')
             await expect(page.getByText('wrong username or password')).toBeVisible()
         })
+    })
+    describe('When logged in', () => {
+        beforeEach(async ({ page }) => {
+            await loginWith(page, 'mluukkai', 'salainen')
+        })
 
+        test('a new blog can be created', async ({ page }) => {
+            await createBlog(page, testBlog)
+            await expect(page.getByRole('listitem')).toContainText(`${testBlog.title} by ${testBlog.author}`)
+        })
+        test.only('blog can be liked', async ({ page }) => {
+            await createBlog(page, testBlog)
+            await page.getByRole('button', {name: 'show'}).click()
+            await page.getByRole('button', {name: 'like'}).click()
+            await expect(page.getByText('likes: 1')).toBeVisible()
+        })
     })
 })
