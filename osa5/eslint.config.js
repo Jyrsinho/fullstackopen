@@ -10,7 +10,8 @@ export default [
         languageOptions: {
             ecmaVersion: 2020,
             globals: {
-                ...globals.vitest
+                ...globals.vitest,
+                ...globals.browser
             },
             parserOptions: {
                 ecmaVersion: 'latest',

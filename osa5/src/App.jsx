@@ -128,9 +128,7 @@ const App = () => {
 
     return (
         <div>
-            {!loggedUser && <Togglable buttonlabel={'login'}>
-                <LoginForm onSubmit={handleLogin}/>
-            </Togglable>}
+            {!loggedUser && <LoginForm onSubmit={handleLogin}/> }
             {loggedUser && <h2>Blogs</h2>}
             {message && <StatusMessage message={message} resetMessage={resetMessage} /> }
             {loggedUser && <User loggedUser={loggedUser} onLogout={handleLogout} />}

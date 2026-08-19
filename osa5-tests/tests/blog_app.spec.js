@@ -15,6 +15,7 @@ describe('Blog app', () => {
     })
 
     test('Login form is shown', async ({ page }) => {
-        // ...
+        await expect(page.getByRole('button', {name: 'login'})).toBeVisible()
     })
+
 })
