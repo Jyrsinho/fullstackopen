@@ -10,7 +10,6 @@ describe('Blog app', () => {
                 password: 'salainen'
             }
         })
-
         await page.goto('http://localhost:5173')
     })
 
@@ -18,4 +17,13 @@ describe('Blog app', () => {
         await expect(page.getByRole('button', {name: 'login'})).toBeVisible()
     })
 
+    describe('Login',() => {
+        test('succeeds with correct credentials', async ({ page }) => {
+            await page.getByLabel('username').fill('mluukkai')
+            await page.getByLabel('password').fill('salainen')
+            await expect(page.getByRole('button', {name: 'login'}).click())
+            await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+        })
+
+    })
 })
