@@ -7,13 +7,15 @@ import Blogs from './components/Blogs.jsx'
 import { User } from './components/User.jsx'
 import { BlogForm } from './components/BlogForm.jsx'
 import { Togglable } from './components/Togglable.jsx'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
     const [loggedUser, setLoggedUser] = useState(null)
-    const [message, setMessage] = useState(null)
+    const [, setMessage] = useState(null)
 
     const blogFormRef = useRef(null)
+    const padding = { padding: 5 }
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -131,16 +133,22 @@ const App = () => {
     }
 
     return (
-        <div>
-            {!loggedUser && <LoginForm onSubmit={handleLogin}/> }
-            {loggedUser && <h2>Blogs</h2>}
-            {message && <StatusMessage message={message} resetMessage={resetMessage} /> }
-            {loggedUser && <User loggedUser={loggedUser} onLogout={handleLogout} />}
-            {loggedUser && <Togglable buttonlabel={'create new blog'} ref={blogFormRef}>
-                <BlogForm createBlog={createBlog} ref={blogFormRef}/>
-            </Togglable>}
-            {loggedUser && <Blogs loggedUser={loggedUser} blogs={blogs} addALike={addALike} removeBlog={removeBlog} />}
-        </div>
+        <Router>
+            <div>
+                <Link style={padding} to='/'>blogs</Link>
+                <Link to={'/login'}>login</Link>
+            </div>
+            <div>
+                <Routes>
+                    <Route path='/' element={
+                        <Blogs loggedUser={loggedUser} blogs={blogs} addALike={addALike} removeBlog={removeBlog} />
+                    } />
+                    <Route path='/login' element={
+                        <LoginForm onSubmit={handleLogin} />
+                    } />
+                </Routes>
+            </div>
+        </Router>
     )
 }
 
