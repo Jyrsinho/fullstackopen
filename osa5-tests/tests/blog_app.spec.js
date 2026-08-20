@@ -38,14 +38,16 @@ describe('Blog app', () => {
     describe('When logged in', () => {
         beforeEach(async ({ page }) => {
             await loginWith(page, 'mluukkai', 'salainen')
+            await createBlog(page, testBlog)
         })
 
         test('a new blog can be created', async ({ page }) => {
-            await createBlog(page, testBlog)
             await expect(page.getByRole('listitem')).toContainText(`${testBlog.title} by ${testBlog.author}`)
         })
-        test.only('blog can be liked', async ({ page }) => {
-            await createBlog(page, testBlog)
+        test('blog can be removed', async ({ page }) => {
+
+        })
+        test('blog can be liked', async ({ page }) => {
             await page.getByRole('button', {name: 'show'}).click()
             await page.getByRole('button', {name: 'like'}).click()
             await expect(page.getByText('likes: 1')).toBeVisible()
