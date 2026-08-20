@@ -25,7 +25,7 @@ export function BlogForm({ createBlog }) {
             <FormInput label={'title'} onChange={setTitle} value={title} />
             <FormInput label={'author'} onChange={setAuthor} value={author} />
             <FormInput label={'url'} onChange={setUrl} value={url} />
-            <button type={'submit'}>create new blog</button>
+            <button type={'submit'}>save</button>
         </form>
     )
 }

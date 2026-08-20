@@ -96,27 +96,27 @@ describe('Blog app', () => {
             await page.getByRole('button', { name: 'Show' }).click()
             await expect(page.getByRole('button', { name: 'Remove' })).not.toBeVisible()
         })
-        test.only('blogs are sorted in descending order based on the amount of likes', async ({ page }) => {
+        test('blogs are sorted in descending order based on the amount of likes', async ({ page }) => {
             await createBlog(page, testBlog2)
             await createBlog(page, testBlog3)
 
-            const blogs = page.locator('.blogContainer')
-            const firstBlog = blogs.nth(0)
-            const secondBlog = blogs.nth(1)
-            const thirdBlog = blogs.nth(2)
+            const firstBlog = page.locator('.blogContainer').filter({hasText: testBlog1.title})
+            const secondBlog = page.locator('.blogContainer').filter({hasText: testBlog2.title})
+            const thirdBlog = page.locator('.blogContainer').filter({hasText: testBlog3.title})
 
             await firstBlog.getByRole('button', { name: 'Show' }).click()
-
             await secondBlog.getByRole('button', { name: 'Show' }).click()
             await secondBlog.getByRole('button', { name: 'like' }).click()
-
             await thirdBlog.getByRole('button', { name: 'Show' }).click()
             await thirdBlog.getByRole('button', { name: 'like' }).click()
+            await expect(thirdBlog).toContainText('likes: 1')
             await thirdBlog.getByRole('button', { name: 'like' }).click()
+            await expect(thirdBlog).toContainText('likes: 2')
 
             const likedBlogs = page.locator('.blogContainer')
-            await expect(likedBlogs.first()).toContainText(`${testBlog3.title}`)
-
+            await expect(likedBlogs.first()).toContainText(testBlog3.title)
+            await expect(likedBlogs.nth(1)).toContainText(testBlog2.title)
+            await expect(likedBlogs.nth(2)).toContainText(testBlog1.title)
         })
     })
 })
