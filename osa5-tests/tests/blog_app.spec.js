@@ -7,16 +7,23 @@ const testBlog = {
     url: 'testblogurl.com'
 }
 
+const testUserWithBlog = {
+    name: 'Matti Luukkainen',
+    username: 'mluukkai',
+    password: 'salainen'
+}
+
+const testUserWithoutBlog = {
+    name: 'Test User',
+    username: 'testuser',
+    password: 'salainen'
+}
+
 describe('Blog app', () => {
     beforeEach(async ({ page, request }) => {
         await request.post('/api/testing/reset')
-        await request.post('/api/users', {
-            data: {
-                name: 'Matti Luukkainen',
-                username: 'mluukkai',
-                password: 'salainen'
-            }
-        })
+        await request.post('/api/users', {data: testUserWithBlog})
+        await request.post('api/users',{data: testUserWithoutBlog})
         await page.goto('/')
     })
 
@@ -26,18 +33,18 @@ describe('Blog app', () => {
 
     describe('Login',() => {
         test('succeeds with correct credentials', async ({ page }) => {
-            await loginWith(page, 'mluukkai', 'salainen')
-            await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+            await loginWith(page, testUserWithBlog.username, testUserWithBlog.password)
+            await expect(page.getByText(`${testUserWithBlog.name} logged in`)).toBeVisible()
         })
 
         test('fails with wrong credentials', async ({ page }) => {
-            await loginWith(page, 'mluukkai', 'wrong')
+            await loginWith(page, testUserWithBlog.username, 'wrong')
             await expect(page.getByText('wrong username or password')).toBeVisible()
         })
     })
     describe('When logged in', () => {
         beforeEach(async ({ page }) => {
-            await loginWith(page, 'mluukkai', 'salainen')
+            await loginWith(page, testUserWithBlog.username, testUserWithBlog.password)
             await createBlog(page, testBlog)
         })
 
@@ -59,7 +66,6 @@ describe('Blog app', () => {
             await expect(messageDiv).toContainText(`Removed blog ${testBlog.title} by ${testBlog.author}`)
             await expect(blogs).toHaveCount(0);
 
-
         })
         test('blog can be liked', async ({ page }) => {
             await page.getByRole('button', {name: 'show'}).click()
@@ -67,12 +73,15 @@ describe('Blog app', () => {
             await expect(page.getByText('likes: 1')).toBeVisible()
         })
         //Tee testi, joka varmistaa, että vain blogin lisännyt käyttäjä näkee blogin poistonapin.
-        test('user sees the removal button for blogs he added', async ({ page }) => {
+        test('user sees the removal button for blog he added', async ({ page }) => {
             await page.getByRole('button', { name: 'Show' }).click()
             await expect(page.getByRole('button', { name: 'Remove' })).toBeVisible()
         })
-        test('user does not see removal button for blogs he did not add', async ({ page }) => {
-
+        test('user does not see removal button for blog he did not add', async ({ page }) => {
+            await page.getByRole('button', { name: 'logout' }).click()
+            await loginWith(page, testUserWithoutBlog.username, testUserWithoutBlog.password )
+            await page.getByRole('button', { name: 'Show' }).click()
+            await expect(page.getByRole('button', { name: 'Remove' })).not.toBeVisible()
         })
     })
 })
