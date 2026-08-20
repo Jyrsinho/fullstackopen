@@ -6,6 +6,7 @@ export function BlogForm({ createBlog }) {
     const [author, setAuthor] = useState('')
     const [url, setUrl] = useState('')
 
+
     const onSubmit = (e) => {
         e.preventDefault()
         createBlog({

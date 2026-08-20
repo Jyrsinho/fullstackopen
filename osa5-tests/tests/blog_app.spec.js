@@ -1,10 +1,22 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 const {loginWith, createBlog} = require('./helper')
 
-const testBlog = {
-    title: 'Test Blog Title',
-    author: 'Test Blog Author',
-    url: 'testblogurl.com'
+const testBlog1 = {
+    title: 'First Blog',
+    author: 'First Author',
+    url: 'firsturl.com'
+}
+
+const testBlog2 = {
+    title: 'Second Blog',
+    author: 'Second Author',
+    url: 'secondurl.com'
+}
+
+const testBlog3 = {
+    title: 'Third Blog',
+    author: 'Third Author',
+    url: 'thirdurl.com'
 }
 
 const testUserWithBlog = {
@@ -45,13 +57,14 @@ describe('Blog app', () => {
     describe('When logged in', () => {
         beforeEach(async ({ page }) => {
             await loginWith(page, testUserWithBlog.username, testUserWithBlog.password)
-            await createBlog(page, testBlog)
+            await createBlog(page, testBlog1)
         })
 
         test('a new blog can be created', async ({ page }) => {
             const blogs = page.locator('.blogContainer')
             await expect(blogs).toHaveCount(1)
-            await expect(page.getByRole('listitem')).toContainText(`${testBlog.title} by ${testBlog.author}`)
+            console.log(blogs);
+            await expect(blogs.first()).toContainText(`${testBlog1.title} by ${testBlog1.author}`)
         })
         test('blog can be removed', async ({ page }) => {
             await page.getByRole('button', { name: 'Show' }).click()
@@ -63,7 +76,7 @@ describe('Blog app', () => {
             const blogs = page.locator('.blogContainer')
             const messageDiv = page.locator('.status-message-container')
 
-            await expect(messageDiv).toContainText(`Removed blog ${testBlog.title} by ${testBlog.author}`)
+            await expect(messageDiv).toContainText(`Removed blog ${testBlog1.title} by ${testBlog1.author}`)
             await expect(blogs).toHaveCount(0);
 
         })
@@ -82,6 +95,28 @@ describe('Blog app', () => {
             await loginWith(page, testUserWithoutBlog.username, testUserWithoutBlog.password )
             await page.getByRole('button', { name: 'Show' }).click()
             await expect(page.getByRole('button', { name: 'Remove' })).not.toBeVisible()
+        })
+        test.only('blogs are sorted in descending order based on the amount of likes', async ({ page }) => {
+            await createBlog(page, testBlog2)
+            await createBlog(page, testBlog3)
+
+            const blogs = page.locator('.blogContainer')
+            const firstBlog = blogs.nth(0)
+            const secondBlog = blogs.nth(1)
+            const thirdBlog = blogs.nth(2)
+
+            await firstBlog.getByRole('button', { name: 'Show' }).click()
+
+            await secondBlog.getByRole('button', { name: 'Show' }).click()
+            await secondBlog.getByRole('button', { name: 'like' }).click()
+
+            await thirdBlog.getByRole('button', { name: 'Show' }).click()
+            await thirdBlog.getByRole('button', { name: 'like' }).click()
+            await thirdBlog.getByRole('button', { name: 'like' }).click()
+
+            const likedBlogs = page.locator('.blogContainer')
+            await expect(likedBlogs.first()).toContainText(`${testBlog3.title}`)
+
         })
     })
 })

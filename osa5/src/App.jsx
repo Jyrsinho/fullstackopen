@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import blogService from './services/blogs.js'
 import { LoginForm } from './components/LoginForm.jsx'
 import loginService from './services/login.js'
@@ -12,6 +12,8 @@ const App = () => {
     const [blogs, setBlogs] = useState([])
     const [loggedUser, setLoggedUser] = useState(null)
     const [message, setMessage] = useState(null)
+
+    const blogFormRef = useRef(null)
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -82,6 +84,8 @@ const App = () => {
                 message: error.message,
             })
         }
+        // TODO- täällä täytyy sulkea blogform-komponentti
+        blogFormRef.current.toggleVisibility()
     }
 
     const addALike = async (likedBlog) => {
@@ -132,8 +136,8 @@ const App = () => {
             {loggedUser && <h2>Blogs</h2>}
             {message && <StatusMessage message={message} resetMessage={resetMessage} /> }
             {loggedUser && <User loggedUser={loggedUser} onLogout={handleLogout} />}
-            {loggedUser && <Togglable buttonlabel={'create new blog'}>
-                <BlogForm createBlog={createBlog}/>
+            {loggedUser && <Togglable buttonlabel={'create new blog'} ref={blogFormRef}>
+                <BlogForm createBlog={createBlog} ref={blogFormRef}/>
             </Togglable>}
             {loggedUser && <Blogs loggedUser={loggedUser} blogs={blogs} addALike={addALike} removeBlog={removeBlog} />}
         </div>
