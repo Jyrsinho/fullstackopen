@@ -5,7 +5,7 @@ export function StatusMessage({ message, resetMessage }) {
     useEffect(() => {
         setTimeout(() => {
             resetMessage()
-        }, 5000)
+        }, 15000)
     }, [message, resetMessage])
 
     const classname = message.status === 'error' ? 'error-message' : 'success-message'

@@ -42,9 +42,23 @@ describe('Blog app', () => {
         })
 
         test('a new blog can be created', async ({ page }) => {
+            const blogs = page.locator('.blogContainer')
+            await expect(blogs).toHaveCount(1)
             await expect(page.getByRole('listitem')).toContainText(`${testBlog.title} by ${testBlog.author}`)
         })
         test('blog can be removed', async ({ page }) => {
+            await page.getByRole('button', { name: 'Show' }).click()
+            page.once('dialog', dialog => {
+                console.log(`Dialog message: ${dialog.message()}`)
+                dialog.accept()
+            });
+            await page.getByRole('button', { name: 'Remove' }).click()
+            const blogs = page.locator('.blogContainer')
+            const messageDiv = page.locator('.status-message-container')
+
+            await expect(messageDiv).toContainText(`Removed blog ${testBlog.title} by ${testBlog.author}`)
+            await expect(blogs).toHaveCount(0);
+
 
         })
         test('blog can be liked', async ({ page }) => {
