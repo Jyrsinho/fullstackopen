@@ -9,15 +9,15 @@ const testBlog = {
 
 describe('Blog app', () => {
     beforeEach(async ({ page, request }) => {
-        await request.post('http://localhost:3001/api/testing/reset')
-        await request.post('http://localhost:3001/api/users', {
+        await request.post('/api/testing/reset')
+        await request.post('/api/users', {
             data: {
                 name: 'Matti Luukkainen',
                 username: 'mluukkai',
                 password: 'salainen'
             }
         })
-        await page.goto('http://localhost:5173')
+        await page.goto('/')
     })
 
     test('Login form is shown', async ({ page }) => {
@@ -65,6 +65,14 @@ describe('Blog app', () => {
             await page.getByRole('button', {name: 'show'}).click()
             await page.getByRole('button', {name: 'like'}).click()
             await expect(page.getByText('likes: 1')).toBeVisible()
+        })
+        //Tee testi, joka varmistaa, että vain blogin lisännyt käyttäjä näkee blogin poistonapin.
+        test('user sees the removal button for blogs he added', async ({ page }) => {
+            await page.getByRole('button', { name: 'Show' }).click()
+            await expect(page.getByRole('button', { name: 'Remove' })).toBeVisible()
+        })
+        test('user does not see removal button for blogs he did not add', async ({ page }) => {
+
         })
     })
 })
