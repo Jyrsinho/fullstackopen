@@ -144,7 +144,7 @@ const App = () => {
                         <Blogs loggedUser={loggedUser} blogs={blogs} addALike={addALike} removeBlog={removeBlog} />
                     } />
                     <Route path='/login' element={
-                        <LoginForm onSubmit={handleLogin} />
+                        <LoginForm loggedUser={loggedUser} onSubmit={handleLogin} />
                     } />
                 </Routes>
             </div>
