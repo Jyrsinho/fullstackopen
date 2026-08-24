@@ -1,31 +1,28 @@
-import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-const Blog = ({  blog, addALike, removeBlog }) => {
-    const [extended, setExtended, ] = useState(false)
-    const buttonText = extended ? 'Hide' : 'Show'
+const Blog = ({  blogs, addALike, removeBlog, loggedUser }) => {
+
+    const id = useParams().id
+    const blog = blogs.find((blog) => {
+        return blog.id === id
+    })
 
     const addedByUser = true
 
-    const toggleExtended = () => {
-        setExtended(!extended)
-    }
 
     return (
         <ul className="blogContainer">
             <li>
-                {blog.title} by {blog.author}
-                <button onClick={toggleExtended}>{buttonText}</button>
+                <h3>{blog.title} by {blog.author}</h3>
             </li>
-            {extended &&
-                    <>
-                        <li>{blog.url}</li>
-                        <li>likes: {blog.likes}
-                            <button onClick={() => addALike(blog)}>like</button>
-                        </li>
-                        <li>{blog.user.name}</li>
-                        {addedByUser && <button onClick={() => removeBlog(blog)}>Remove</button> }
-                    </>
-            }
+            <>
+                <li>{blog.url}</li>
+                <li>likes: {blog.likes}
+                    {loggedUser && <button onClick={() => addALike(blog)}>like</button> }
+                </li>
+                <li>{blog.user.name}</li>
+                {addedByUser && <button onClick={() => removeBlog(blog)}>Remove</button> }
+            </>
         </ul>
     )
 }

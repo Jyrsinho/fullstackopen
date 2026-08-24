@@ -4,6 +4,7 @@ import { LoginForm } from './components/LoginForm.jsx'
 import Blogs from './components/Blogs.jsx'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import loginService from './services/login.js'
+import Blog from './components/Blog.jsx'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -12,9 +13,7 @@ const App = () => {
 
     const blogFormRef = useRef(null)
     const padding = { padding: 5 }
-    const loginButtonLabel = loggedUser !== null ? 'logout' : 'login'
     const navigate = useNavigate()
-    console.log('App loggedUser -', loggedUser)
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -90,7 +89,6 @@ const App = () => {
                 message: error.message,
             })
         }
-        // TODO- täällä täytyy sulkea blogform-komponentti
         blogFormRef.current.toggleVisibility()
     }
 
@@ -118,11 +116,12 @@ const App = () => {
         if (!confirm) return
         try {
             await blogService.deleteBlog(blogToRemove.id)
+            setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
             setMessage({
                 status: 'success',
                 message:  `Removed blog ${blogToRemove.title} by ${blogToRemove.author}`,
             })
-            setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
+            navigate('/')
         }catch(error){
             setMessage({
                 status: 'error',
@@ -147,8 +146,11 @@ const App = () => {
             </div>
             <div>
                 <Routes>
+                    <Route path='/blogs/:id' element={
+                        <Blog blogs={blogs} loggedUser={loggedUser} addALike={addALike} removeBlog={removeBlog}/>
+                    }  />
                     <Route path='/' element={
-                        <Blogs blogs={blogs} addALike={addALike} removeBlog={removeBlog} />
+                        <Blogs blogs={blogs} />
                     } />
                     <Route path='/login' element={
                         <LoginForm loggedUser={loggedUser} handleLogin={handleLogin} handleLogout={handleLogout} />
