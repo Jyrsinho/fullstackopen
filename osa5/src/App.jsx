@@ -6,11 +6,12 @@ import { Routes, Route, Link, useNavigate, useMatch } from 'react-router-dom'
 import loginService from './services/login.js'
 import Blog from './components/Blog.jsx'
 import { BlogForm } from './components/BlogForm.jsx'
+import { StatusMessage } from './components/StatusMessage.jsx'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
     const [loggedUser, setLoggedUser] = useState(null)
-    const [, setMessage] = useState(null)
+    const [message, setMessage] = useState(null)
 
     const padding = { padding: 5 }
     const navigate = useNavigate()
@@ -166,6 +167,9 @@ const App = () => {
                         <BlogForm createBlog={createBlog} />
                     } />
                 </Routes>
+            </div>
+            <div>
+                <StatusMessage message={message} resetMessage={resetMessage} />
             </div>
         </div>
     )
