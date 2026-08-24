@@ -7,6 +7,7 @@ import loginService from './services/login.js'
 import Blog from './components/Blog.jsx'
 import { BlogForm } from './components/BlogForm.jsx'
 import { StatusMessage } from './components/StatusMessage.jsx'
+import { Container } from '@mui/material'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -148,7 +149,7 @@ const App = () => {
     }
 
     return (
-        <div>
+        <Container>
             <div>
                 <Link style={padding} to='/'>blogs</Link>
                 {loggedUser ?
@@ -176,7 +177,7 @@ const App = () => {
             <div>
                 <StatusMessage message={message} resetMessage={resetMessage} />
             </div>
-        </div>
+        </Container>
     )
 }
 

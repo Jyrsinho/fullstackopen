@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FormInput } from './FormInput.jsx'
+import { Button,  TextField } from '@mui/material'
 
 export function LoginForm({ handleLogin }) {
 
@@ -10,9 +10,9 @@ export function LoginForm({ handleLogin }) {
         <div>
             <h2>Login: </h2>
             <form onSubmit={(e) => handleLogin(e, { username, password })}>
-                <FormInput name="username" onChange={ setUsername} value={username} label={'username: '} />
-                <FormInput type={'password'} name="password" onChange={ setPassword} value={password} label={'password: '} />
-                <button type={'submit'}>login</button>
+                <TextField autoFocus={true} name={'username'} label={'username'} type={'text'} onChange={(e) => setUsername(e.target.value)} value={username}></TextField>
+                <TextField name={'password'} label={'password'} type={'password'} onChange={(e) => setPassword(e.target.value)} value={password}></TextField>
+                <Button type={'submit'}>login</Button>
             </form>
         </div>
     )

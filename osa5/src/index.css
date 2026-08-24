@@ -2,6 +2,12 @@ li {
     list-style: none;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+}
+
 .status-message-container {
     font-size: 1.5em;
     background-color: lightgrey;

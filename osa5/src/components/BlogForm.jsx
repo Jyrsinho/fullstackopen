@@ -1,5 +1,5 @@
-import { FormInput } from './FormInput.jsx'
 import { useState } from 'react'
+import { Button, TextField } from '@mui/material'
 
 export function BlogForm({ createBlog }) {
     const [title, setTitle] = useState('')
@@ -22,10 +22,10 @@ export function BlogForm({ createBlog }) {
     return (
         <form className='blog-form' onSubmit={(e) => onSubmit(e)}>
             <h2>create new</h2>
-            <FormInput label={'title'} onChange={setTitle} value={title} />
-            <FormInput label={'author'} onChange={setAuthor} value={author} />
-            <FormInput label={'url'} onChange={setUrl} value={url} />
-            <button type={'submit'}>save</button>
+            <TextField name={'title'} label={'title'} onChange={(e) => setTitle(e.target.value)} value={title} />
+            <TextField label={'author'} onChange={(e) => setAuthor(e.target.value)} value={author} />
+            <TextField label={'url'} onChange={(e) => setUrl(e.target.value)} value={url} />
+            <Button type={'submit'}>save</Button>
         </form>
     )
 }
