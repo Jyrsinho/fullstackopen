@@ -2,7 +2,7 @@ import { useEffect , useState } from 'react'
 import blogService from './services/blogs.js'
 import { LoginForm } from './components/LoginForm.jsx'
 import Blogs from './components/Blogs.jsx'
-import { Routes, Route, Link, useNavigate } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate, useMatch } from 'react-router-dom'
 import loginService from './services/login.js'
 import Blog from './components/Blog.jsx'
 import { BlogForm } from './components/BlogForm.jsx'
@@ -14,6 +14,11 @@ const App = () => {
 
     const padding = { padding: 5 }
     const navigate = useNavigate()
+
+    const match = useMatch('/blogs/:id')
+    const blog = match
+        ? blogs.find(note => note.id === match.params.id)
+        : null
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -149,7 +154,7 @@ const App = () => {
             <div>
                 <Routes>
                     <Route path='/blogs/:id' element={
-                        <Blog blogs={blogs} loggedUser={loggedUser} addALike={addALike} removeBlog={removeBlog}/>
+                        <Blog blog={blog} loggedUser={loggedUser} addALike={addALike} removeBlog={removeBlog}/>
                     }  />
                     <Route path='/' element={
                         <Blogs blogs={blogs} />

@@ -1,14 +1,9 @@
-import { useParams } from 'react-router-dom'
 
-const Blog = ({  blogs, addALike, removeBlog, loggedUser }) => {
-
-    const id = useParams().id
-    const blog = blogs.find((blog) => {
-        return blog.id === id
-    })
-
+const Blog = ({  blog, addALike, removeBlog, loggedUser }) => {
+    console.log('Blog -', blog)
     const addedByUser = loggedUser?.username === blog?.user.username
 
+    if (!blog) return null
 
     return (
         <ul className="blogContainer">
