@@ -5,6 +5,7 @@ import Blogs from './components/Blogs.jsx'
 import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import loginService from './services/login.js'
 import Blog from './components/Blog.jsx'
+import { BlogForm } from './components/BlogForm.jsx'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -88,8 +89,9 @@ const App = () => {
                 status: 'error',
                 message: error.message,
             })
+            console.log(error)
         }
-        blogFormRef.current.toggleVisibility()
+        navigate('/')
     }
 
     const addALike = async (likedBlog) => {
@@ -140,9 +142,10 @@ const App = () => {
             <div>
                 <Link style={padding} to='/'>blogs</Link>
                 {loggedUser ?
-                    <Link to={'/'} onClick={handleLogout}>logout</Link>
-                    : <Link to='/login'>login</Link>
+                    <Link to={'/'} style={padding} onClick={handleLogout}>logout</Link>
+                    : <Link style={padding} to='/login'>login</Link>
                 }
+                <Link style={padding} to={'/create'}>new blog</Link>
             </div>
             <div>
                 <Routes>
@@ -155,7 +158,9 @@ const App = () => {
                     <Route path='/login' element={
                         <LoginForm loggedUser={loggedUser} handleLogin={handleLogin} handleLogout={handleLogout} />
                     } />
-                    <Route path={'/logout'} action={handleLogout} />
+                    <Route path={'/create'} element={
+                        <BlogForm createBlog={createBlog} />
+                    } />
                 </Routes>
             </div>
         </div>

@@ -7,7 +7,7 @@ const Blog = ({  blogs, addALike, removeBlog, loggedUser }) => {
         return blog.id === id
     })
 
-    const addedByUser = true
+    const addedByUser = loggedUser?.username === blog?.user.username
 
 
     return (
