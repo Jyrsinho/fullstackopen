@@ -5,8 +5,7 @@ const loginWith = async (page, username, password) => {
     await page.getByLabel('username').fill(username)
     await page.getByLabel('password').fill(password)
     await page.getByRole('button', { name: 'login' }).click()
-    await expect(page.getByRole('link', { name: 'logout' })).toBeVisible()
-
+    await expect(page.getByRole('heading', { name: 'blogs' })).toBeVisible()
 }
 
 const createBlog = async (page, blog) => {
@@ -18,4 +17,12 @@ const createBlog = async (page, blog) => {
     await expect(page.getByRole('heading', { name: 'blogs' })).toBeVisible()
 }
 
-export { loginWith, createBlog }
+const likeABlog = async (page, blog) => {
+    await page.getByRole('link', {name: `${blog.title} by ${blog.author}` }).click()
+    await page.getByRole('button', { name: 'like' }).click()
+    const likes = await page.getByText('likes', {exact: false})
+    await expect(likes).toContainText('likes');
+    await page.getByRole('link', { name: 'blogs' }).click()
+}
+
+export { likeABlog, loginWith, createBlog }

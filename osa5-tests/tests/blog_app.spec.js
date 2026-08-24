@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const {loginWith, createBlog} = require('./helper')
+const {loginWith, createBlog, likeABlog} = require('./helper')
 
 const testBlog1 = {
     title: 'First Blog',
@@ -65,53 +65,43 @@ describe('Blog app', () => {
             await expect(blogs.first()).toContainText(`${testBlog1.title} by ${testBlog1.author}`)
         })
         test('blog can be removed', async ({ page }) => {
-            await page.getByRole('button', { name: 'Show' }).click()
+            await page.getByRole('link', {name: `${testBlog1.title} by ${testBlog1.author}` }).click()
             page.once('dialog', dialog => {
-                console.log(`Dialog message: ${dialog.message()}`)
                 dialog.accept()
             });
             await page.getByRole('button', { name: 'Remove' }).click()
-            const blogs = page.locator('.blog-link')
             const messageDiv = page.locator('.status-message-container')
+            const blogs = await page.locator('.blog-link')
 
             await expect(messageDiv).toContainText(`Removed blog ${testBlog1.title} by ${testBlog1.author}`)
             await expect(blogs).toHaveCount(0);
 
         })
         test('blog can be liked', async ({ page }) => {
-            await page.getByRole('button', {name: 'show'}).click()
+            await page.getByRole('link', {name: `${testBlog1.title} by ${testBlog1.author}` }).click()
             await page.getByRole('button', {name: 'like'}).click()
             await expect(page.getByText('likes: 1')).toBeVisible()
         })
         //Tee testi, joka varmistaa, että vain blogin lisännyt käyttäjä näkee blogin poistonapin.
         test('user sees the removal button for blog he added', async ({ page }) => {
-            await page.getByRole('button', { name: 'Show' }).click()
+            await page.getByRole('link', {name: `${testBlog1.title} by ${testBlog1.author}` }).click()
             await expect(page.getByRole('button', { name: 'Remove' })).toBeVisible()
         })
         test('user does not see removal button for blog he did not add', async ({ page }) => {
-            await page.getByRole('button', { name: 'logout' }).click()
+            await page.getByRole('link', { name: 'logout' }).click()
             await loginWith(page, testUserWithoutBlog.username, testUserWithoutBlog.password )
-            await page.getByRole('button', { name: 'Show' }).click()
+            await page.getByRole('link', {name: `${testBlog1.title} by ${testBlog1.author}` }).click()
             await expect(page.getByRole('button', { name: 'Remove' })).not.toBeVisible()
         })
         test('blogs are sorted in descending order based on the amount of likes', async ({ page }) => {
             await createBlog(page, testBlog2)
             await createBlog(page, testBlog3)
 
-            const firstBlog = page.locator('.blogContainer').filter({hasText: testBlog1.title})
-            const secondBlog = page.locator('.blogContainer').filter({hasText: testBlog2.title})
-            const thirdBlog = page.locator('.blogContainer').filter({hasText: testBlog3.title})
+            await likeABlog(page, testBlog2)
+            await likeABlog(page, testBlog3)
+            await likeABlog(page, testBlog3)
 
-            await firstBlog.getByRole('button', { name: 'Show' }).click()
-            await secondBlog.getByRole('button', { name: 'Show' }).click()
-            await secondBlog.getByRole('button', { name: 'like' }).click()
-            await thirdBlog.getByRole('button', { name: 'Show' }).click()
-            await thirdBlog.getByRole('button', { name: 'like' }).click()
-            await expect(thirdBlog).toContainText('likes: 1')
-            await thirdBlog.getByRole('button', { name: 'like' }).click()
-            await expect(thirdBlog).toContainText('likes: 2')
-
-            const likedBlogs = page.locator('.blogContainer')
+            const likedBlogs = page.locator('.blog-link')
             await expect(likedBlogs.first()).toContainText(testBlog3.title)
             await expect(likedBlogs.nth(1)).toContainText(testBlog2.title)
             await expect(likedBlogs.nth(2)).toContainText(testBlog1.title)
