@@ -12,7 +12,7 @@ const Blogs = ({ blogs }) => {
             <ul>
                 {blogs.map(blog => {
                     return (
-                        <li key={blog.id}>
+                        <li key={blog.id} className="blog-link">
                             <Link to={`/blogs/${blog.id}`}>{`${blog.title} by ${blog.author}`}</Link>
                         </li>
                     )

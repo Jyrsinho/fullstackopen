@@ -65,6 +65,10 @@ const App = () => {
             window.localStorage.setItem('loggedUser', JSON.stringify(user))
             blogService.setToken(user.token)
             setLoggedUser(user)
+            setMessage({
+                status: 'success',
+                message: `${user.name} logged in`
+            })
             navigate('/')
         }catch(error){
             console.log(error)

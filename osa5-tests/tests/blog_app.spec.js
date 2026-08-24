@@ -38,11 +38,9 @@ describe('Blog app', () => {
         await request.post('api/users',{data: testUserWithoutBlog})
         await page.goto('/')
     })
-
-    test('Login form is shown', async ({ page }) => {
-        await expect(page.getByRole('button', {name: 'login'})).toBeVisible()
+    test('Login link is shown', async ({ page }) => {
+        await expect(page.getByRole('link', {name: 'login'})).toBeVisible()
     })
-
     describe('Login',() => {
         test('succeeds with correct credentials', async ({ page }) => {
             await loginWith(page, testUserWithBlog.username, testUserWithBlog.password)
@@ -61,7 +59,7 @@ describe('Blog app', () => {
         })
 
         test('a new blog can be created', async ({ page }) => {
-            const blogs = page.locator('.blogContainer')
+            const blogs = page.locator('.blog-link')
             await expect(blogs).toHaveCount(1)
             console.log(blogs);
             await expect(blogs.first()).toContainText(`${testBlog1.title} by ${testBlog1.author}`)
@@ -73,7 +71,7 @@ describe('Blog app', () => {
                 dialog.accept()
             });
             await page.getByRole('button', { name: 'Remove' }).click()
-            const blogs = page.locator('.blogContainer')
+            const blogs = page.locator('.blog-link')
             const messageDiv = page.locator('.status-message-container')
 
             await expect(messageDiv).toContainText(`Removed blog ${testBlog1.title} by ${testBlog1.author}`)
