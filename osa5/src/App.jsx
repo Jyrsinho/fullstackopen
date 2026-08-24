@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect , useState } from 'react'
 import blogService from './services/blogs.js'
 import { LoginForm } from './components/LoginForm.jsx'
 import Blogs from './components/Blogs.jsx'
@@ -12,7 +12,6 @@ const App = () => {
     const [loggedUser, setLoggedUser] = useState(null)
     const [, setMessage] = useState(null)
 
-    const blogFormRef = useRef(null)
     const padding = { padding: 5 }
     const navigate = useNavigate()
 
@@ -117,13 +116,13 @@ const App = () => {
         const confirm = window.confirm(`Are you sure you want to remove ${blogToRemove.title}?`)
         if (!confirm) return
         try {
+            navigate('/')
             await blogService.deleteBlog(blogToRemove.id)
             setBlogs(blogs.filter(blog => blog.id !== blogToRemove.id))
             setMessage({
                 status: 'success',
                 message:  `Removed blog ${blogToRemove.title} by ${blogToRemove.author}`,
             })
-            navigate('/')
         }catch(error){
             setMessage({
                 status: 'error',
