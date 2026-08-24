@@ -1,13 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import blogService from './services/blogs.js'
 import { LoginForm } from './components/LoginForm.jsx'
-import loginService from './services/login.js'
-import { StatusMessage } from './components/StatusMessage.jsx'
 import Blogs from './components/Blogs.jsx'
-import { User } from './components/User.jsx'
-import { BlogForm } from './components/BlogForm.jsx'
-import { Togglable } from './components/Togglable.jsx'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
+import loginService from './services/login.js'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
@@ -16,6 +12,9 @@ const App = () => {
 
     const blogFormRef = useRef(null)
     const padding = { padding: 5 }
+    const loginButtonLabel = loggedUser !== null ? 'logout' : 'login'
+    const navigate = useNavigate()
+    console.log('App loggedUser -', loggedUser)
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -45,13 +44,22 @@ const App = () => {
         }
     },[])
 
+    const handleLogout = () => {
+        console.log('handleLogOut')
+        setLoggedUser(null)
+        localStorage.removeItem('loggedUser')
+    }
+
+
     const handleLogin = async (e, credentials) => {
+        console.log('handleLogin - credentials' , credentials)
         e.preventDefault()
         try {
             const user = await loginService.login(credentials)
             window.localStorage.setItem('loggedUser', JSON.stringify(user))
             blogService.setToken(user.token)
             setLoggedUser(user)
+            navigate('/')
         }catch(error){
             console.log(error)
             setMessage({
@@ -61,10 +69,6 @@ const App = () => {
         }
     }
 
-    const handleLogout = async () => {
-        setLoggedUser(null)
-        localStorage.removeItem('loggedUser')
-    }
 
     const createBlog = async (createdBlog) => {
         try {
@@ -133,22 +137,26 @@ const App = () => {
     }
 
     return (
-        <Router>
+        <div>
             <div>
                 <Link style={padding} to='/'>blogs</Link>
-                <Link to={'/login'}>login</Link>
+                {loggedUser ?
+                    <Link to={'/'} onClick={handleLogout}>logout</Link>
+                    : <Link to='/login'>login</Link>
+                }
             </div>
             <div>
                 <Routes>
                     <Route path='/' element={
-                        <Blogs loggedUser={loggedUser} blogs={blogs} addALike={addALike} removeBlog={removeBlog} />
+                        <Blogs blogs={blogs} addALike={addALike} removeBlog={removeBlog} />
                     } />
                     <Route path='/login' element={
-                        <LoginForm loggedUser={loggedUser} onSubmit={handleLogin} />
+                        <LoginForm loggedUser={loggedUser} handleLogin={handleLogin} handleLogout={handleLogout} />
                     } />
+                    <Route path={'/logout'} action={handleLogout} />
                 </Routes>
             </div>
-        </Router>
+        </div>
     )
 }
 
