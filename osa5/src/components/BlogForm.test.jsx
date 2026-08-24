@@ -15,7 +15,7 @@ describe('BlogForm', () => {
         const titleInput = screen.getByLabelText('title')
         const authorInput = screen.getByLabelText('author')
         const urlInput = screen.getByLabelText('url')
-        const submitButton = screen.getByText('create new blog')
+        const submitButton = screen.getByText('save')
 
         await user.type(titleInput, testInput.title)
         await user.type(authorInput, testInput.author)

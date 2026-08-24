@@ -1,6 +1,5 @@
 
 const Blog = ({  blog, addALike, removeBlog, loggedUser }) => {
-    console.log('Blog -', blog)
     const addedByUser = loggedUser?.username === blog?.user.username
 
     if (!blog) return null
