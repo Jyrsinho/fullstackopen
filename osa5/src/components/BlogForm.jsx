@@ -22,10 +22,10 @@ export function BlogForm({ createBlog }) {
     return (
         <form className='blog-form' onSubmit={(e) => onSubmit(e)}>
             <h2>create new</h2>
-            <TextField name={'title'} label={'title'} onChange={(e) => setTitle(e.target.value)} value={title} />
-            <TextField label={'author'} onChange={(e) => setAuthor(e.target.value)} value={author} />
-            <TextField label={'url'} onChange={(e) => setUrl(e.target.value)} value={url} />
-            <Button type={'submit'}>save</Button>
+            <TextField margin={'normal'} name={'title'} label={'title'} onChange={(e) => setTitle(e.target.value)} value={title} />
+            <TextField margin={'normal'} label={'author'} onChange={(e) => setAuthor(e.target.value)} value={author} />
+            <TextField margin={'normal'} label={'url'} onChange={(e) => setUrl(e.target.value)} value={url} />
+            <Button  type={'submit'}>save</Button>
         </form>
     )
 }

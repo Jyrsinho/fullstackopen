@@ -10,7 +10,7 @@ export function LoginForm({ handleLogin }) {
         <div>
             <h2>Login: </h2>
             <form onSubmit={(e) => handleLogin(e, { username, password })}>
-                <TextField autoFocus={true} name={'username'} label={'username'} type={'text'} onChange={(e) => setUsername(e.target.value)} value={username}></TextField>
+                <TextField margin={'normal'} autoFocus={true} name={'username'} label={'username'} type={'text'} onChange={(e) => setUsername(e.target.value)} value={username}></TextField>
                 <TextField name={'password'} label={'password'} type={'password'} onChange={(e) => setPassword(e.target.value)} value={password}></TextField>
                 <Button type={'submit'}>login</Button>
             </form>

@@ -8,13 +8,12 @@ import Blog from './components/Blog.jsx'
 import { BlogForm } from './components/BlogForm.jsx'
 import { StatusMessage } from './components/StatusMessage.jsx'
 import { Container } from '@mui/material'
+import NavBar from './components/NavBar.jsx'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
     const [loggedUser, setLoggedUser] = useState(null)
     const [message, setMessage] = useState(null)
-
-    const padding = { padding: 5 }
     const navigate = useNavigate()
 
     const match = useMatch('/blogs/:id')
@@ -150,14 +149,7 @@ const App = () => {
 
     return (
         <Container>
-            <div>
-                <Link style={padding} to='/'>blogs</Link>
-                {loggedUser ?
-                    <Link to={'/'} style={padding} onClick={handleLogout}>logout</Link>
-                    : <Link style={padding} to='/login'>login</Link>
-                }
-                <Link style={padding} to={'/create'}>new blog</Link>
-            </div>
+            <NavBar loggedUser={loggedUser} handleLogout={handleLogout} />
             <div>
                 <Routes>
                     <Route path='/blogs/:id' element={
