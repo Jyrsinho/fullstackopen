@@ -15,7 +15,7 @@ export function StatusMessage({ message, resetMessage }) {
 
     return (
         <div className={'status-message-container'}>
-            <Alert className={classname}>{message.message}</Alert>
+            <Alert> <p className={classname}>{message.message}</p></Alert>
         </div>
     )
 }
