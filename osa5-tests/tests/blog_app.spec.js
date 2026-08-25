@@ -4,19 +4,23 @@ const {loginWith, createBlog, likeABlog} = require('./helper')
 const testBlog1 = {
     title: 'First Blog',
     author: 'First Author',
-    url: 'firsturl.com'
+    url: 'firsturl.com',
+    likes: 0
+
 }
 
 const testBlog2 = {
     title: 'Second Blog',
     author: 'Second Author',
-    url: 'secondurl.com'
+    url: 'secondurl.com',
+    likes: 0
 }
 
 const testBlog3 = {
     title: 'Third Blog',
     author: 'Third Author',
-    url: 'thirdurl.com'
+    url: 'thirdurl.com',
+    likes: 0
 }
 
 const testUserWithBlog = {

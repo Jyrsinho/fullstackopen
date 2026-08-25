@@ -14,7 +14,7 @@ const Blog = ({  blog, addALike, removeBlog, loggedUser }) => {
                 </li>
                 <li> <Link to={blog.url}>{blog.url}</Link></li>
                 <li>Added by {blog.user.name}</li>
-                <li> likes: {blog.likes}</li>
+                <li data-testid={'likes'}> likes: {blog.likes}</li>
             </ul>
             <ButtonGroup size="medium">
                 {addedByUser && <Button color={'warning'} onClick={() => removeBlog(blog)}>Remove</Button> }

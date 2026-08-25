@@ -20,7 +20,7 @@ export function StatusMessage({ message, resetMessage }) {
 
     return (
         <div className={'status-message-container'}>
-            <Alert sx={style}>{message.message}</Alert>
+            <Alert data-testid="alert" sx={style}>{message.message}</Alert>
         </div>
     )
 }
