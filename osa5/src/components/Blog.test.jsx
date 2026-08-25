@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
 import userEvent from '@testing-library/user-event'
+import { MemoryRouter } from 'react-router-dom'
 
 const blogCreatorUser = {
     username: 'testUser',
@@ -24,33 +25,47 @@ const testBlog = {
 describe('Blog', () => {
     describe('when user not logged in', () => {
         test('renders title', () => {
-            render(<Blog blog={testBlog}/>)
-
+            render(
+                <MemoryRouter>
+                    <Blog blog={testBlog}/>
+                </MemoryRouter>)
             const element = screen.getByText('Test Title', { exact: false })
             expect(element).toBeDefined()
         })
         test('render url, likes and user', async () => {
-            render(<Blog blog={testBlog} loggedUser={blogCreatorUser}/>)
-
+            render(
+                <MemoryRouter>
+                    <Blog blog={testBlog}/>
+                </MemoryRouter>)
             const url = screen.getByText('testurl.com')
+            screen.debug()
             expect(url).toBeDefined()
             const likes = screen.getByText('likes', { exact: false })
             expect(likes).toBeDefined()
-            const blogUser = screen.getByText(testBlog.user.name)
+            const blogUser = screen.getByText(testBlog.user.name, { exact: false })
             expect(blogUser).toBeDefined()
         })
         test('does not render like button', () => {
-            render(<Blog blog={testBlog} loggedUser={null}/>)
+            render(
+                <MemoryRouter>
+                    <Blog blog={testBlog} loggedUser={null}/>
+                </MemoryRouter>)
             expect(screen.queryByRole('button', { name: 'like' })).not.toBeInTheDocument()
         })
         test('does not render remove button', async () => {
-            render(<Blog blog={testBlog} loggedUser={null}/>)
+            render(
+                <MemoryRouter>
+                    <Blog blog={testBlog} loggedUser={null}/>
+                </MemoryRouter>)
             expect(screen.queryByRole('button', { name: 'remove' })).not.toBeInTheDocument()
         })
     })
     describe('when logged in as creator of a blog', () => {
         test('renders removeButton', () => {
-            render(<Blog loggedUser={blogCreatorUser} blog={testBlog}/>)
+            render(
+                <MemoryRouter>
+                    <Blog loggedUser={blogCreatorUser} blog={testBlog}/>
+                </MemoryRouter>)
 
             const removeButton = screen.getByRole('button', { name: 'Remove' })
             expect(removeButton).toBeDefined()
@@ -58,7 +73,10 @@ describe('Blog', () => {
         test('clicking like button twice calls its event handler twice ', async () => {
             const mockHandler = vi.fn()
             const user = userEvent.setup()
-            render(<Blog blog={testBlog} loggedUser={blogCreatorUser} addALike={mockHandler}/>)
+            render(
+                <MemoryRouter>
+                    <Blog blog={testBlog} loggedUser={blogCreatorUser} addALike={mockHandler}/>
+                </MemoryRouter>)
 
             const likeButton = screen.getByText('like')
             await user.click(likeButton)
@@ -69,12 +87,18 @@ describe('Blog', () => {
     })
     describe('when logged in as viewer of a blog', () => {
         test('renders like button', () => {
-            render(<Blog blog={testBlog} loggedUser={blogViewerUser}/>)
+            render(
+                <MemoryRouter>
+                    <Blog blog={testBlog} loggedUser={blogViewerUser}/>
+                </MemoryRouter>)
             const likeButton = screen.getByRole('button', { name: 'like' })
             expect(likeButton).toBeInTheDocument()
         })
         test('does not render remove button', async () => {
-            render(<Blog blog={testBlog} loggedUser={blogViewerUser}/>)
+            render(
+                <MemoryRouter>
+                    <Blog blog={testBlog} loggedUser={blogViewerUser}/>
+                </MemoryRouter>)
             expect(
                 screen.queryByRole('button', { name: 'Remove' })
             ).not.toBeInTheDocument()

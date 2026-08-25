@@ -26,9 +26,3 @@ describe('BlogForm', () => {
         expect(createBlogMock).toHaveBeenCalledWith(testInput)
     })
 })
-
-/*
-Tee uuden blogin luomisesta huolehtivalle lomakkeelle testi,
-joka varmistaa, että lomake kutsuu propsina saamaansa
-takaisinkutsufunktiota oikeilla tiedoilla siinä vaiheessa kun blogi luodaan.
- */
