@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom'
 import { AppBar, Button, Toolbar } from '@mui/material'
 
-const style = { '&:hover': { bgcolor: 'rgba(0,255,255,0.5)' } }
+const style = {
+    margin: '1em',
+    '&:hover': {
+        bgcolor: 'rgba(0,255,255,0.5)'
+    } }
 
 const NavBar = ({ loggedUser, handleLogout }) => {
     return (

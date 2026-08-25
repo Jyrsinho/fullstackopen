@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Alert } from '@mui/material'
 
 export function StatusMessage({ message, resetMessage }) {
 
@@ -14,7 +15,7 @@ export function StatusMessage({ message, resetMessage }) {
 
     return (
         <div className={'status-message-container'}>
-            <p className={classname}>{message.message}</p>
+            <Alert className={classname}>{message.message}</Alert>
         </div>
     )
 }
