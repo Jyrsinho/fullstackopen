@@ -3,6 +3,13 @@ import { Alert } from '@mui/material'
 
 export function StatusMessage({ message, resetMessage }) {
 
+    const textColor = message?.status === 'success' ? 'green' : 'red'
+
+    const style = {
+        margin: '1em',
+        color: textColor,
+    }
+
     useEffect(() => {
         setTimeout(() => {
             resetMessage()
@@ -11,11 +18,9 @@ export function StatusMessage({ message, resetMessage }) {
 
     if (!message) return null
 
-    const classname = message.status === 'error' ? 'error-message' : 'success-message'
-
     return (
         <div className={'status-message-container'}>
-            <Alert> <p className={classname}>{message.message}</p></Alert>
+            <Alert sx={style}>{message.message}</Alert>
         </div>
     )
 }
